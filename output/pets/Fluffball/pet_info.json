@@ -18,6 +18,15 @@
     "sleep",
     "curious_look"
   ],
+  "action_descriptions": {
+    "idle": "Gentle floating bobbing motion with soft breathing, sparkles drifting lazily",
+    "hop": "Bouncy hopping movement with floppy ears bouncing, leaves rainbow trail",
+    "float": "Graceful floating through the air, body gently rotating, ears streaming behind",
+    "wiggle_ears": "Ears wiggle and twitch playfully while body stays still",
+    "bounce": "Energetic bouncing up and down with increasing height, sparkles flying",
+    "sleep": "Curled up on a small cloud, gentle breathing, ears drooped softly",
+    "curious_look": "Looking around with wide sparkling eyes, ears perked up, slight head tilts"
+  },
   "created_at": "2026-04-03T00:00:00Z",
   "generation_metadata": {
     "llm_model": "claude-sonnet-4-5-20250929",

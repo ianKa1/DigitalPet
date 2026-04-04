@@ -31,12 +31,18 @@ output/*
 !output/pets/
 output/pets/*
 !output/pets/README.md
-!output/pets/example_pet/
+!output/pets/Fluffball/
+!output/pets/Fluffball/**
 generated_pets/
 *.png
 *.gif
 *.jpg
 *.jpeg
+# Track images in example pet (Fluffball)
+!output/pets/Fluffball/*.png
+!output/pets/Fluffball/*.gif
+!output/pets/Fluffball/*.jpg
+!output/pets/Fluffball/*.jpeg
 
 # IDE
 .vscode/
