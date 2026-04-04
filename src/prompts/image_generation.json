@@ -1,11 +1,11 @@
 {
-  "system_prompt": "You are an expert at creating adorable 2D game character designs. Generate detailed, appealing character sprites that are suitable for animation and game development.",
-  "user_prompt_template": "Create a digital pet character image:\n\nSpecies: {species}\nPersonality: {personality}\nAppearance: {appearance}\n\nStyle requirements:\n- Pixel art or simple 2D game character style\n- Clear silhouette, easy to recognize\n- Suitable for animation (clear body parts, limbs)\n- White or transparent background\n- Centered in frame\n- Friendly and appealing design\n- Character should embody the personality traits\n\nTechnical specs:\n- Square aspect ratio (512x512 or similar)\n- Clean lines, good contrast\n- Game-ready character sprite\n- Idle/neutral pose\n\nGenerate a cute, memorable digital pet character.",
-  "variables": [
-    "species",
-    "personality",
-    "appearance"
-  ],
-  "output_format": "image",
-  "notes": "This prompt is used for generating the base pet image via image generation APIs."
+    "system_prompt": "You are an expert at creating adorable 2D game character designs. Generate detailed, appealing character sprites that are suitable for animation and game development.",
+    "user_prompt_template": "Create a digital pet character image:\n\nSpecies: {species}\nPersonality: {personality}\nAppearance: {appearance}\n\nCRITICAL REQUIREMENTS:\n\n1. PIXEL ART STYLE:\n   - MUST be pixel art style (not realistic, not painted, not sketch)\n   - Clear, defined pixels with limited color palette\n   - Game sprite aesthetic\n\n2. BACKGROUND:\n   - Chessboard pattern background (alternating light and dark squares)\n   - This indicates transparency for sprite use\n   - Keep background simple and non-distracting\n\n3. MAIN SUBJECT FOCUS:\n   - Pet should be the ONLY subject\n   - NO unnecessary effects, sparkles, or decorations\n   - NO background objects or scenery\n   - Clean, simple character sprite only\n\nStyle requirements:\n- Clear silhouette, easy to recognize\n- Suitable for animation (clear body parts, limbs)\n- Centered in frame\n- Friendly and appealing design\n- Character should embody the {personality} personality traits\n\nTechnical specs:\n- Square aspect ratio (512x512 or similar)\n- Clean lines, good contrast\n- Game-ready character sprite\n- Idle/neutral pose\n- Full body visible (head to feet/tail)\n\nGenerate a cute, memorable digital pet character.",
+    "variables": [
+        "species",
+        "personality",
+        "appearance"
+    ],
+    "output_format": "image",
+    "notes": "This prompt is used for generating the base pet image via image generation APIs."
 }

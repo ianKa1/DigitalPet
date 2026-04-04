@@ -44,7 +44,7 @@ def main():
         "appearance": pet_data["appearance"],
         "special_ability": pet_data["special_ability"]
     }
-    actions = pet_data["actions"][:3]  # Use first 3 actions for testing
+    actions = pet_data["actions"]
     action_descriptions = pet_data.get("action_descriptions", {})
 
     print(f"✅ Test pet: {pet_description['name']} ({pet_description['species']})")

@@ -1,14 +1,14 @@
 {
-  "system_prompt": "Generate consistent sprite sheet animations for 2D game characters. Maintain identical character design, proportions, and style across all frames.",
-  "user_prompt_template": "Create a sprite sheet animation showing a {species} performing this action: {action_description}\n\nCharacter details:\n- Appearance: {appearance}\n- Personality: {personality}\n- Special ability: {special_ability}\n\nCRITICAL REQUIREMENTS:\n\n1. CONSISTENCY:\n   - Maintain EXACT same character design in every frame\n   - Keep proportions, colors, and features identical across frames\n   - Same art style and level of detail throughout\n   - Character size must be identical in all frames\n\n2. FULL BODY VISIBILITY:\n   - Show the COMPLETE character body (head to feet/tail)\n   - DO NOT crop or cut off any body parts\n   - DO NOT show only the head or upper body\n   - Include all limbs, ears, tail, and features\n   - Leave enough space around the character\n\n3. LOOPABLE ANIMATION:\n   - First frame and last frame must connect seamlessly\n   - Animation should cycle smoothly when played on repeat\n   - Plan the motion so it returns to starting position\n   - 4-6 frames total in horizontal row\n\n4. TECHNICAL SPECS:\n   - Pixel art or simple 2D game sprite style\n   - Clean white or transparent background\n   - Character centered in each frame\n   - Equal spacing between frames\n   - Motion reflects {personality} personality\n\nGenerate the complete sprite sheet as a single image with all frames side by side.",
-  "variables": [
-    "species",
-    "personality",
-    "appearance",
-    "special_ability",
-    "action",
-    "action_description"
-  ],
-  "output_format": "image",
-  "notes": "This prompt is used for generating sprite animations via image generation APIs like Gemini Flash Image. Emphasizes consistency, full body visibility, and loopable cycles."
+    "system_prompt": "Generate consistent sprite sheet animations for 2D game characters. Maintain identical character design, proportions, and style across all frames.",
+    "user_prompt_template": "Create a sprite sheet animation showing a {species} performing this action: {action_description}\n\nCharacter details:\n- Appearance: {appearance}\n- Personality: {personality}\n- Special ability: {special_ability}\n\nCRITICAL REQUIREMENTS:\n\n1. REFERENCE IMAGE ADHERENCE:\n   - Use pixel art style BUT keep the general shape the same as the reference image\n   - Maintain the same overall silhouette and proportions as shown in reference\n   - Character design should be recognizably the same creature\n   - Preserve key features (ears, tail, body shape, etc.) from reference\n\n2. CONSISTENCY:\n   - Maintain EXACT same character design in every frame\n   - Keep proportions, colors, and features identical across frames\n   - Same art style and level of detail throughout\n   - Character size must be identical in all frames\n\n3. FULL BODY VISIBILITY:\n   - Show the COMPLETE character body (head to feet/tail)\n   - DO NOT crop or cut off any body parts\n   - DO NOT show only the head or upper body\n   - Include all limbs, ears, tail, and features\n   - Leave enough space around the character\n\n4. LOOPABLE ANIMATION:\n   - First frame and last frame must connect seamlessly\n   - Animation should cycle smoothly when played on repeat\n   - Plan the motion so it returns to starting position\n   - 4-6 frames total in horizontal row\n\n5. TECHNICAL SPECS:\n   - Pixel art or simple 2D game sprite style\n   - Clean white or transparent background\n   - Character centered in each frame\n   - Equal spacing between frames\n   - Motion reflects {personality} personality\n\nGenerate the complete sprite sheet as a single image with all frames side by side.",
+    "variables": [
+        "species",
+        "personality",
+        "appearance",
+        "special_ability",
+        "action",
+        "action_description"
+    ],
+    "output_format": "image",
+    "notes": "This prompt is used for generating sprite animations via image generation APIs like Gemini Flash Image. Emphasizes consistency, full body visibility, and loopable cycles."
 }

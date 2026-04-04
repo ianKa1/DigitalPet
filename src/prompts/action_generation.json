@@ -1,11 +1,11 @@
 {
-  "system_prompt": "You are an expert at designing character animations for 2D games. Generate appropriate, expressive actions that match a character's personality and physical capabilities.",
-  "user_prompt_template": "Given this digital pet:\n\nSpecies: {species}\nPersonality: {personality}\nSpecial Ability: {special_ability}\n\nGenerate 5-7 basic actions that fit this pet's personality and physical form. Actions should be:\n- Simple animations suitable for sprite animation (walk, jump, wave, dance, idle, etc.)\n- Appropriate for the personality traits and species\n- Expressive and characterful\n- Varied in energy level (some calm, some energetic)\n- Physically plausible for this creature\n\nExamples of good actions:\n- idle (standing/breathing animation)\n- walk, run, skip, hop\n- jump, bounce, flip\n- wave, dance, celebrate, cheer\n- sleep, yawn, stretch\n- eat, drink\n- look_around, curious_sniff\n\nReturn ONLY a JSON array of action names, like: [\"idle\", \"walk\", \"jump\", \"wave\", \"celebrate\", \"sleep\"]\n\nNo additional text, just the JSON array.",
-  "variables": [
-    "species",
-    "personality",
-    "special_ability"
-  ],
-  "output_format": "json_array",
-  "notes": "This prompt generates a list of appropriate actions for the pet based on its characteristics. Used with LLM APIs."
+    "system_prompt": "You are an expert at designing character animations for 2D games. Generate appropriate, expressive actions that match a character's personality and physical capabilities.",
+    "user_prompt_template": "Given this digital pet:\n\nSpecies: {species}\nPersonality: {personality}\nSpecial Ability: {special_ability}\n\nGenerate 5-7 basic actions that fit this pet's personality and physical form. Actions should be:\n- Simple animations suitable for sprite animation (walk, jump, wave, dance, idle, etc.)\n- Appropriate for the personality traits and species\n- Expressive and characterful\n- Varied in energy level (some calm, some energetic)\n- Physically plausible for this creature\n\nExamples of good actions:\n- idle (standing/breathing animation)\n- walk, run, skip, hop\n- jump, bounce, flip\n- wave, dance, celebrate, cheer\n- sleep, yawn, stretch\n- eat, drink\n- look_around, curious_sniff\n\nReturn ONLY a JSON array of action names, like: [\"idle\", \"walk\", \"jump\", \"wave\", \"celebrate\", \"sleep\"]\n\nNo additional text, just the JSON array.",
+    "variables": [
+        "species",
+        "personality",
+        "special_ability"
+    ],
+    "output_format": "json_array",
+    "notes": "This prompt generates a list of appropriate actions for the pet based on its characteristics. Used with LLM APIs."
 }
