@@ -1,0 +1,11 @@
+{
+  "system_prompt": "You are an expert at creating adorable 2D game character designs. Generate detailed, appealing character sprites that are suitable for animation and game development.",
+  "user_prompt_template": "Create a digital pet character image:\n\nSpecies: {species}\nPersonality: {personality}\nAppearance: {appearance}\n\nStyle requirements:\n- Pixel art or simple 2D game character style\n- Clear silhouette, easy to recognize\n- Suitable for animation (clear body parts, limbs)\n- White or transparent background\n- Centered in frame\n- Friendly and appealing design\n- Character should embody the personality traits\n\nTechnical specs:\n- Square aspect ratio (512x512 or similar)\n- Clean lines, good contrast\n- Game-ready character sprite\n- Idle/neutral pose\n\nGenerate a cute, memorable digital pet character.",
+  "variables": [
+    "species",
+    "personality",
+    "appearance"
+  ],
+  "output_format": "image",
+  "notes": "This prompt is used for generating the base pet image via image generation APIs."
+}

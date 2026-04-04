@@ -1,7 +1,7 @@
 """Generate pet images using Nanobanana API."""
 import requests
 from datetime import datetime
-from .. import config
+import config
 
 
 def generate_pet_image(pet_description):

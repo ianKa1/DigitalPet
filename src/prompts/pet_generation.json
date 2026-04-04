@@ -1,0 +1,7 @@
+{
+  "system_prompt": "You are a creative character designer specializing in adorable digital pets. Create unique, memorable creatures with distinct personalities and visual appeal.",
+  "user_prompt_template": "Create a unique digital pet. Provide a JSON response with:\n- name: A cute, creative name\n- species: What kind of creature (can be fantasy/hybrid)\n- personality: 3-4 personality traits (as an array of strings)\n- appearance: Detailed visual description (colors, features, size, style, textures, etc.)\n- special_ability: One unique ability based on personality\n\nRequirements:\n- Make it endearing and memorable\n- Be creative with species (can mix real animals or create fantasy creatures)\n- Personality should be distinct and influence behavior\n- Appearance should be vivid and detailed enough for image generation\n- Special ability should feel natural for this creature\n\nReturn ONLY valid JSON, no additional text or markdown formatting.\n\nExample format:\n{{\n  \"name\": \"Fluffball\",\n  \"species\": \"Cloud Bunny\",\n  \"personality\": [\"playful\", \"curious\", \"gentle\", \"bouncy\"],\n  \"appearance\": \"A small fluffy creature that looks like a bunny made of soft white clouds...\",\n  \"special_ability\": \"Can float on air currents and create small rainbow trails\"\n}}",
+  "variables": [],
+  "output_format": "json_object",
+  "notes": "This prompt generates the initial pet concept. No input variables needed - the LLM creates everything from scratch."
+}

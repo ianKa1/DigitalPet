@@ -1,0 +1,14 @@
+{
+  "system_prompt": "You are an expert at creating sprite sheet animations for 2D game characters. Generate clear, detailed descriptions for animation frames that capture the character's personality and movement style.",
+  "user_prompt_template": "Create a sprite sheet animation for this digital pet:\n\nSpecies: {species}\nPersonality: {personality}\nAppearance: {appearance}\nSpecial Ability: {special_ability}\n\nAction to animate: {action}\nAction description: {action_description}\n\nAnimation requirements:\n- 4-6 frames showing the complete action cycle\n- Pixel art or simple 2D game sprite style\n- Clear, smooth motion that reflects the pet's personality\n- White or transparent background\n- Character should be centered and consistent size across frames\n- Action should be clear and readable\n- Motion should feel natural for this specific creature\n\nTechnical specs:\n- Sprite sheet format (frames in a row or grid)\n- Each frame same dimensions\n- Consistent character proportions\n- Loopable animation (first and last frame should connect smoothly)\n\nDescribe the sprite sheet animation in detail, frame by frame if helpful.",
+  "variables": [
+    "species",
+    "personality",
+    "appearance",
+    "special_ability",
+    "action",
+    "action_description"
+  ],
+  "output_format": "text",
+  "notes": "This prompt is used for generating sprite animations via image generation APIs like Gemini Flash Image."
+}

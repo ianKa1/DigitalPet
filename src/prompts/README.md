@@ -1,29 +1,83 @@
 # Prompt Templates
 
-This directory contains prompt templates for each generation step in the pipeline.
+This directory contains structured prompt templates for each generation step in the pipeline.
 
-## Files
+## Template Format
 
-- **pet_generation.txt** - System prompt for generating pet personality and appearance using LLM
-- **action_generation.txt** - System prompt for generating actions based on pet personality using LLM
-- **image_generation.txt** - Prompt template for generating pet images using Nanobanana API
-- **animation_generation.txt** - Prompt template for generating sprite animations using Nanobanana API
+All templates are now in JSON format with the following structure:
 
-## Usage
+```json
+{
+  "system_prompt": "Instructions about the task and model role",
+  "user_prompt_template": "The actual prompt with {variable} placeholders",
+  "variables": ["list", "of", "expected", "variables"],
+  "output_format": "json_object|json_array|text|image",
+  "notes": "Additional documentation"
+}
+```
 
-These prompts are loaded by the generator modules at runtime. You can edit them to customize the generation behavior:
+## Available Templates
 
-- Modify `pet_generation.txt` to change what attributes pets have
-- Modify `action_generation.txt` to change the types of actions generated
-- Modify `image_generation.txt` and `animation_generation.txt` to adjust the visual style
+### pet_generation.json
+- **Purpose**: Generate a unique pet with personality and appearance using LLM
+- **Variables**: None (creates pet from scratch)
+- **Output**: JSON object with name, species, personality, appearance, special_ability
 
-## Template Variables
+### action_generation.json
+- **Purpose**: Generate appropriate actions for a pet based on its characteristics
+- **Variables**: `species`, `personality`, `special_ability`
+- **Output**: JSON array of action names
 
-Some prompts use placeholder variables that are filled in at runtime:
-- `{species}` - The pet's species
-- `{personality}` - The pet's personality traits
-- `{special_ability}` - The pet's special ability
-- `{appearance}` - The pet's appearance description
-- `{action}` - The action being animated
+### image_generation.json
+- **Purpose**: Generate the base pet character image
+- **Variables**: `species`, `personality`, `appearance`
+- **Output**: Image via image generation API
 
-These are replaced using Python's `.format()` method.
+### animation_generation.json
+- **Purpose**: Generate sprite sheet animations for pet actions
+- **Variables**: `species`, `personality`, `appearance`, `special_ability`, `action`, `action_description`
+- **Output**: Image (sprite sheet) via image generation API
+
+## Usage with PromptManager
+
+```python
+from prompt_manager import PromptManager
+
+pm = PromptManager()
+
+# Simple usage
+prompt = pm.build_prompt("pet_generation")
+
+# With data substitution
+prompt = pm.build_animation_prompt(
+    pet_data={
+        "species": "Cloud Bunny",
+        "personality": ["playful", "curious"],
+        "appearance": "A fluffy white bunny made of clouds...",
+        "special_ability": "Can float on air currents"
+    },
+    action="hop",
+    action_description="bouncy hopping movement"
+)
+```
+
+## Backwards Compatibility
+
+The PromptManager also supports old `.txt` format templates for backwards compatibility. If a `.json` template is not found, it will fall back to loading the `.txt` version.
+
+## Customization
+
+To customize prompts:
+1. Edit the JSON files to change system prompts or user prompt templates
+2. Add or remove variables as needed
+3. The PromptManager will automatically reload templates (caching is per-session)
+
+## Legacy Files
+
+The old `.txt` format templates are kept for reference:
+- `pet_generation.txt`
+- `action_generation.txt`
+- `image_generation.txt`
+- `animation_generation.txt`
+
+These can be safely removed once all generators are migrated to use PromptManager.

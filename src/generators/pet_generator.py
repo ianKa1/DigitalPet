@@ -1,7 +1,7 @@
 """Generate pet personality and appearance using LLM."""
 import json
 from anthropic import Anthropic
-from .. import config
+import config
 
 
 def generate_pet_description():

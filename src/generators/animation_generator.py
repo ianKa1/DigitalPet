@@ -1,7 +1,7 @@
 """Generate sprite animations using Nanobanana API."""
 import requests
 from datetime import datetime
-from .. import config
+import config
 
 
 def generate_sprite_animations(pet_description, actions):
