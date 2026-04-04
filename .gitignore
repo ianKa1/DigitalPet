@@ -27,7 +27,11 @@ wheels/
 *.egg
 
 # Generated content
-output/
+output/*
+!output/pets/
+output/pets/*
+!output/pets/README.md
+!output/pets/example_pet/
 generated_pets/
 *.png
 *.gif

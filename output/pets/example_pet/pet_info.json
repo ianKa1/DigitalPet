@@ -1,0 +1,27 @@
+{
+  "name": "Fluffball",
+  "species": "Cloud Bunny",
+  "personality": [
+    "playful",
+    "curious",
+    "gentle",
+    "bouncy"
+  ],
+  "appearance": "A small fluffy creature that looks like a bunny made of soft white clouds. Has large sparkly blue eyes, tiny pink nose, and long floppy ears that seem to float. Its body is round and puffy like a cotton ball. Small paws peek out from the fluffy cloud body. Leaves tiny sparkles when it moves.",
+  "special_ability": "Can float on air currents and create small rainbow trails",
+  "actions": [
+    "idle",
+    "hop",
+    "float",
+    "wiggle_ears",
+    "bounce",
+    "sleep",
+    "curious_look"
+  ],
+  "created_at": "2026-04-03T00:00:00Z",
+  "generation_metadata": {
+    "llm_model": "claude-sonnet-4-5-20250929",
+    "image_generated": false,
+    "animations_generated": []
+  }
+}

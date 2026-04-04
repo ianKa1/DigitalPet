@@ -1,0 +1,14 @@
+Create a unique digital pet. Provide a JSON response with:
+- name: A cute, creative name
+- species: What kind of creature (can be fantasy/hybrid)
+- personality: 3-4 personality traits (as an array of strings)
+- appearance: Detailed visual description (colors, features, size, style, etc.)
+- special_ability: One unique ability based on personality
+
+Requirements:
+- Make it endearing and memorable
+- Be creative with species (can mix real animals or create fantasy creatures)
+- Personality should be distinct and influence behavior
+- Appearance should be vivid enough for image generation
+
+Return ONLY valid JSON, no additional text.
