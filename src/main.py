@@ -5,6 +5,7 @@ from generators import (
     generate_pet_image,
     generate_pet_actions,
     generate_sprite_animations,
+    generate_sprite_animations_batch
 )
 
 
@@ -30,26 +31,34 @@ def main():
     # actions = generate_pet_actions(pet_description)
     # print(f"✅ Generated actions: {', '.join(actions)}")
 
-    # Test data for animation generation
-    print("\n📋 Using test data from example pet (Fluffball)...")
+    # Load test data from example pet (Fluffball)
+    print("\n📋 Loading test data from Fluffball example pet...")
+    with open("output/pets/Fluffball/pet_info.json", "r") as f:
+        pet_data = json.load(f)
+
+    # Extract pet description and actions
     pet_description = {
-        "name": "Fluffball",
-        "species": "Cloud Bunny",
-        "personality": ["playful", "curious", "gentle", "bouncy"],
-        "appearance": "A small fluffy creature that looks like a bunny made of soft white clouds. Has large sparkly blue eyes, tiny pink nose, and long floppy ears that seem to float. Its body is round and puffy like a cotton ball. Small paws peek out from the fluffy cloud body. Leaves tiny sparkles when it moves.",
-        "special_ability": "Can float on air currents and create small rainbow trails"
+        "name": pet_data["name"],
+        "species": pet_data["species"],
+        "personality": pet_data["personality"],
+        "appearance": pet_data["appearance"],
+        "special_ability": pet_data["special_ability"]
     }
-    actions = ["idle", "hop", "float"]
+    actions = pet_data["actions"][:3]  # Use first 3 actions for testing
+    action_descriptions = pet_data.get("action_descriptions", {})
+
     print(f"✅ Test pet: {pet_description['name']} ({pet_description['species']})")
     print(f"✅ Test actions: {', '.join(actions)}")
 
     # Step 4: Generate sprite animations for each action
     print("\n🎬 Step 4: Generating sprite animations...")
-    animation_paths = generate_sprite_animations(pet_description, actions)
+    animation_paths = generate_sprite_animations_batch(pet_description, actions, action_descriptions)
     print(f"✅ Animations saved!")
-    for action, path in animation_paths.items():
-        print(f"  - {action}: {path}")
-
+    if type(animation_paths) is dict:
+        for action, path in animation_paths.items():
+            print(f"  - {action}: {path}")
+    else:
+        print(f" - Animations all in one: {animation_paths}")
     print("\n🎉 Animation generation test complete!")
     print("=" * 50)
 

@@ -34,9 +34,14 @@ All templates are now in JSON format with the following structure:
 - **Output**: Image via image generation API
 
 ### animation_generation.json
-- **Purpose**: Generate sprite sheet animations for pet actions
+- **Purpose**: Generate sprite sheet animations for pet actions (individual)
 - **Variables**: `species`, `personality`, `appearance`, `special_ability`, `action`, `action_description`
 - **Output**: Image (sprite sheet) via image generation API
+
+### animation_generation_batch.json
+- **Purpose**: Generate all sprite sheet animations in a single batch API call
+- **Variables**: `species`, `personality`, `appearance`, `special_ability`, `actions_text`, `num_actions`
+- **Output**: Image (combined sprite sheet) via image generation API
 
 ## Usage with PromptManager
 

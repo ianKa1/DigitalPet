@@ -1,0 +1,14 @@
+{
+  "system_prompt": "Generate consistent sprite sheet animations for 2D game characters showing multiple actions. Maintain identical character design, proportions, and style across ALL animations and frames.",
+  "user_prompt_template": "Create a complete sprite sheet showing a {species} with ALL of these animations:\n\n{actions_text}\n\nCharacter details:\n- Appearance: {appearance}\n- Personality: {personality}\n- Special ability: {special_ability}\n\nCRITICAL REQUIREMENTS:\n\n1. CONSISTENCY ACROSS ALL ANIMATIONS:\n   - EXACT same character design in every single frame\n   - Identical proportions, colors, and features throughout\n   - Same art style and detail level across all {num_actions} animations\n   - Character size must be consistent in all frames\n\n2. FULL BODY VISIBILITY:\n   - Show COMPLETE character body in every frame (head to feet/tail)\n   - DO NOT crop or cut off any body parts\n   - DO NOT show only head or upper body\n   - Include all limbs, ears, tail, and features in every frame\n   - Leave adequate space around character\n\n3. LOOPABLE ANIMATIONS:\n   - Each animation's first and last frames must connect seamlessly\n   - All animations should cycle smoothly when looped\n   - Plan motion to return to starting position for each action\n   - 4-6 frames per animation\n\n4. ORGANIZATION & TECHNICAL:\n   - Grid layout with one row per action (or multiple rows if needed)\n   - Label each animation row with action name\n   - Pixel art or simple 2D game sprite style\n   - Clean white or transparent background\n   - Equal spacing between frames\n   - Character centered in each frame\n   - Motion reflects {personality} personality\n\nGenerate the complete sprite sheet as a single organized image with all {num_actions} animations clearly labeled.",
+  "variables": [
+    "species",
+    "actions_text",
+    "appearance",
+    "personality",
+    "special_ability",
+    "num_actions"
+  ],
+  "output_format": "image",
+  "notes": "This prompt is used for generating all animations in a single batch API call to Gemini Flash Image. Emphasizes consistency across all animations, full body visibility, and loopable cycles. The actions_text variable should contain a formatted list of actions with descriptions."
+}
