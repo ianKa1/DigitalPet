@@ -50,16 +50,25 @@ def main():
     print(f"✅ Test pet: {pet_description['name']} ({pet_description['species']})")
     print(f"✅ Test actions: {', '.join(actions)}")
 
-    # Step 4: Generate sprite animations for each action
+    # Step 4: Generate sprite animations (includes sprite sheet processing)
     print("\n🎬 Step 4: Generating sprite animations...")
-    animation_paths = generate_sprite_animations_batch(pet_description, actions, action_descriptions)
-    print(f"✅ Animations saved!")
-    if type(animation_paths) is dict:
-        for action, path in animation_paths.items():
-            print(f"  - {action}: {path}")
+    sprite_metadata = generate_sprite_animations_batch(pet_description, actions, action_descriptions)
+
+    if sprite_metadata:
+        print(f"✅ Animation generation complete!")
+        print(f"   Batch sprite sheet: {sprite_metadata['batch_sprite_sheet']}")
+        print(f"   Extracted {len(sprite_metadata['animations'])} individual GIFs:")
+        for action in actions:
+            if action in sprite_metadata['animations']:
+                anim = sprite_metadata['animations'][action]
+                if 'error' in anim:
+                    print(f"     ❌ {action}: {anim['error']}")
+                else:
+                    print(f"     ✅ {action}: {anim['gif_path']}")
     else:
-        print(f" - Animations all in one: {animation_paths}")
-    print("\n🎉 Animation generation test complete!")
+        print("❌ Animation generation failed")
+
+    print("\n🎉 Pipeline test complete!")
     print("=" * 50)
 
 
