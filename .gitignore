@@ -50,3 +50,6 @@ generated_pets/
 *.swp
 *.swo
 .DS_Store
+
+# Local docs
+TODO.md
