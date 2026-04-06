@@ -2,7 +2,7 @@
 from PIL import Image
 import os
 
-
+# TODO: code is very ugly
 def extract_gif_from_sprite_sheet(
     sprite_sheet_path,
     output_path,
