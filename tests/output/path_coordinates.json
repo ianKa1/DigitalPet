@@ -1,0 +1,68 @@
+{
+  "path_name": "central_park_walkway",
+  "image_width": 1702,
+  "image_height": 1276,
+  "waypoints": [
+    {
+      "x": 48,
+      "y": 668
+    },
+    {
+      "x": 169,
+      "y": 645
+    },
+    {
+      "x": 285,
+      "y": 622
+    },
+    {
+      "x": 395,
+      "y": 605
+    },
+    {
+      "x": 512,
+      "y": 595
+    },
+    {
+      "x": 634,
+      "y": 587
+    },
+    {
+      "x": 759,
+      "y": 581
+    },
+    {
+      "x": 883,
+      "y": 574
+    },
+    {
+      "x": 1007,
+      "y": 562
+    },
+    {
+      "x": 1131,
+      "y": 551
+    },
+    {
+      "x": 1251,
+      "y": 541
+    },
+    {
+      "x": 1364,
+      "y": 537
+    },
+    {
+      "x": 1476,
+      "y": 535
+    },
+    {
+      "x": 1585,
+      "y": 536
+    },
+    {
+      "x": 1668,
+      "y": 538
+    }
+  ],
+  "description": "A character walks along the existing paved path from the lower-left to the center-right of the scene."
+}
