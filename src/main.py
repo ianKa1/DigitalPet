@@ -13,7 +13,7 @@ def main():
     """Run the complete digital pet generation pipeline."""
     print("🐾 Welcome to DigitalPet Generator!")
     print("=" * 50)
-    print("\n⚠️  TEST MODE: Only running animation generation (Step 1)")
+    print("\n⚠️  TEST MODE: Running Steps 1-3 (pet generation, image, actions)")
     print("=" * 50)
 
     # Step 1 - Generate pet personality and appearance
@@ -26,10 +26,10 @@ def main():
     pet_image_path = generate_pet_image(pet_description)
     print(f"✅ Pet image saved to: {pet_image_path}")
 
-    # BLOCKED: Step 3 - Generate actions based on personality
-    # print("\n🎭 Step 3: Generating pet actions...")
-    # actions = generate_pet_actions(pet_description)
-    # print(f"✅ Generated actions: {', '.join(actions)}")
+    # Step 3 - Generate actions based on personality
+    print("\n🎭 Step 3: Generating pet actions...")
+    actions = generate_pet_actions(pet_description)
+    print(f"✅ Generated actions: {', '.join(actions)}")
 
     # Load test data from example pet (Fluffball)
     # print("\n📋 Loading test data from Fluffball example pet...")

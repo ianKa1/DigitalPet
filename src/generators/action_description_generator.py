@@ -1,12 +1,15 @@
 """Generate pet actions based on personality using LLM."""
 import json
-from anthropic import Anthropic
+import os
+from google import genai
 from .. import config
+from ..prompt_manager import PromptManager
 
 
 def generate_pet_actions(pet_description):
     """
     Use LLM to generate appropriate actions for the pet based on personality.
+    Updates the pet_info.json file with actions and action_descriptions.
 
     Args:
         pet_description (dict): Pet description with personality traits
@@ -14,49 +17,76 @@ def generate_pet_actions(pet_description):
     Returns:
         list: List of action names (e.g., ['walk', 'jump', 'wave'])
     """
-    if not config.ANTHROPIC_API_KEY:
-        raise ValueError("ANTHROPIC_API_KEY not set in .env file")
+    if not config.GEMINI_API_KEY:
+        print("⚠️  GEMINI_API_KEY not set. Skipping action generation.")
+        return []
 
-    client = Anthropic(api_key=config.ANTHROPIC_API_KEY)
+    # Initialize Gemini client and PromptManager
+    client = genai.Client(api_key=config.GEMINI_API_KEY)
+    pm = PromptManager()
 
-    personality = pet_description.get("personality", [])
-    species = pet_description.get("species", "creature")
-    special_ability = pet_description.get("special_ability", "")
-
-    prompt = f"""Given this digital pet:
-Species: {species}
-Personality: {', '.join(personality)}
-Special Ability: {special_ability}
-
-Generate 5-7 basic actions that fit this pet's personality. Actions should be:
-- Simple animations (walk, jump, wave, dance, etc.)
-- Appropriate for the personality
-- Suitable for sprite animation
-
-Return ONLY a JSON array of action names, like: ["walk", "jump", "wave", "idle", "celebrate"]"""
-
-    message = client.messages.create(
-        model="claude-sonnet-4-5-20250929",
-        max_tokens=512,
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
-
-    response_text = message.content[0].text
-
-    # Parse JSON array from response
+    # Build prompt using PromptManager
     try:
-        # Find JSON array in response
-        start_idx = response_text.find('[')
-        end_idx = response_text.rfind(']') + 1
-        if start_idx != -1 and end_idx > start_idx:
-            actions = json.loads(response_text[start_idx:end_idx])
-        else:
-            # Fallback to default actions
-            actions = ["idle", "walk", "jump", "wave", "celebrate"]
-    except json.JSONDecodeError:
-        # Fallback to default actions
-        actions = ["idle", "walk", "jump", "wave", "celebrate"]
+        prompt = pm.build_prompt("action_desrciption_generation", {
+            "species": pet_description.get("species", "creature"),
+            "personality": ", ".join(pet_description.get("personality", [])),
+            "special_ability": pet_description.get("special_ability", "")
+        })
+    except Exception as e:
+        print(f"❌ Error building action prompt: {e}")
+        return []
 
-    return actions
+    print(f"🎭 Generating pet actions with Gemini...")
+    print(f"   Pet: {pet_description.get('name', 'Unknown')} ({pet_description.get('species', 'Unknown')})")
+
+    # Call Gemini API
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        # Parse JSON response
+        json_text = response.text.strip()
+
+        # Clean up markdown code blocks if present
+        if json_text.startswith('```'):
+            lines = json_text.split('\n')
+            json_text = '\n'.join(lines[1:-1])
+
+        action_data = json.loads(json_text)
+
+        actions = action_data.get("actions", [])
+        action_descriptions = action_data.get("action_descriptions", {})
+
+        print(f"   ✅ Generated {len(actions)} actions: {', '.join(actions)}")
+
+        # Load existing pet_info.json and update it
+        pet_name = pet_description.get("name", "UnknownPet")
+        pet_dir = os.path.join(config.PETS_DIR, pet_name)
+        pet_info_path = os.path.join(pet_dir, "pet_info.json")
+
+        if os.path.exists(pet_info_path):
+            with open(pet_info_path, 'r') as f:
+                pet_info = json.load(f)
+
+            # Add actions and descriptions
+            pet_info["actions"] = actions
+            pet_info["action_descriptions"] = action_descriptions
+
+            # Save updated pet_info.json
+            with open(pet_info_path, 'w') as f:
+                json.dump(pet_info, f, indent=2)
+
+            print(f"   ✅ Updated: {pet_info_path}")
+        else:
+            print(f"   ⚠️  pet_info.json not found at: {pet_info_path}")
+
+        return actions
+
+    except json.JSONDecodeError as e:
+        print(f"   ❌ Error parsing JSON response: {e}")
+        return []
+    except Exception as e:
+        print(f"   ❌ Error generating actions: {e}")
+        return []
