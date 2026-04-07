@@ -1,5 +1,10 @@
-"""Main script to generate a digital pet with personality and animations."""
 import json
+import sys
+from pathlib import Path
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from src.generators import (
     generate_pet_description,
     generate_pet_image,
@@ -30,28 +35,9 @@ def main():
     print("\n🎭 Step 3: Generating pet actions...")
     actions = generate_pet_actions(pet_description)
     print(f"✅ Generated actions: {', '.join(actions)}")
-
-    # Step 4: Generate sprite animations (includes sprite sheet processing)
-    print("\n🎬 Step 4: Generating sprite animations...")
-    sprite_metadata = generate_sprite_animations_batch(pet_description, actions)
-
-    if sprite_metadata:
-        print(f"✅ Animation generation complete!")
-        print(f"   Batch sprite sheet: {sprite_metadata['batch_sprite_sheet']}")
-        print(f"   Extracted {len(sprite_metadata['animations'])} individual GIFs:")
-        for action in actions:
-            if action in sprite_metadata['animations']:
-                anim = sprite_metadata['animations'][action]
-                if 'error' in anim:
-                    print(f"     ❌ {action}: {anim['error']}")
-                else:
-                    print(f"     ✅ {action}: {anim['gif_path']}")
-    else:
-        print("❌ Animation generation failed")
-
-    print("\n🎉 Pipeline test complete!")
-    print("=" * 50)
-
-
+    
+    
 if __name__ == "__main__":
     main()
+
+    
