@@ -40,6 +40,7 @@ generated_pets/
 *.jpeg
 # Track all files in example pet (Fluffball)
 !output/pets/Fluffball/**/*
+!tests/background/park.jpg
 
 # IDE
 .vscode/
