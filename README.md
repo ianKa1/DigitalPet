@@ -11,26 +11,11 @@ An AI-powered digital pet generator that creates unique pets with personalities 
 
 ## Tech Stack
 
-- Python 3.8+
-- Anthropic Claude API (for pet and action generation)
-- Nanobanana API (for image and animation generation)
+- Python 3.12.0
+- Gemini API 
 
 ## Project Structure
-
-```
-DigitalPet/
-├── main.py                  # Main pipeline script
-├── config.py                # Configuration and environment setup
-├── pet_generator.py         # Step 1: Generate pet personality
-├── image_generator.py       # Step 2: Generate pet image
-├── action_generator.py      # Step 3: Generate pet actions
-├── animation_generator.py   # Step 4: Generate sprite animations
-├── requirements.txt         # Python dependencies
-├── .env                     # API keys (create from .env.example)
-└── output/                  # Generated content
-    ├── pets/                # Pet images
-    └── animations/          # Sprite animations
-```
+TBD
 
 ## Setup
 
@@ -57,14 +42,20 @@ DigitalPet/
    ```
 
 5. **Run the generator:**
+   Run the whole pipeline
    ```bash
-   python main.py
+   python -m src.main 
+   ```
+
+   Run step 1-3 and step 4 separately (since step 4 is problematic)
+   ```bash
+   python tests/test_pet_desc_appr_action_desc.py
+   python tests/test_animation_generation.py --pet pet_name
    ```
 
 ## API Keys Needed
 
-- **Anthropic API**: Get from https://console.anthropic.com/
-- **Nanobanana API**: Add your Nanobanana API key (update image/animation generators with actual API endpoints)
+- **Gemini API**: Get from https://aistudio.google.com/
 
 ## Current Status
 
