@@ -4,10 +4,10 @@ An AI-powered digital pet generator that creates unique pets with personalities 
 
 ## Pipeline
 
-1. **Pet Generation**: Use LLM to create pet personality and appearance description
-2. **Image Creation**: Use Nanobanana API to generate the pet's image from description
-3. **Action Generation**: Use LLM to generate actions based on personality (walk, jump, wave, etc.)
-4. **Animation**: Use Nanobanana API to generate sprite animations for each action
+1. **Pet Generation**: Use Gemini2.5 flash to create pet personality and appearance description
+2. **Image Creation**: Use Gemini3.1 image flash to generate the pet's image from description
+3. **Action Generation**: Generate actions based on personality (walk, jump, wave, etc.)
+4. **Animation**: Generate sprite animations for each action. Extract gifs from sprite sheet.
 
 ## Tech Stack
 
