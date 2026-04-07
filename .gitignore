@@ -38,11 +38,8 @@ generated_pets/
 *.gif
 *.jpg
 *.jpeg
-# Track images in example pet (Fluffball)
-!output/pets/Fluffball/*.png
-!output/pets/Fluffball/*.gif
-!output/pets/Fluffball/*.jpg
-!output/pets/Fluffball/*.jpeg
+# Track all files in example pet (Fluffball)
+!output/pets/Fluffball/**/*
 
 # IDE
 .vscode/
