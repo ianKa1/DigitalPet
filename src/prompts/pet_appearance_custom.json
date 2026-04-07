@@ -1,0 +1,11 @@
+{
+    "system_prompt": "You are an expert at creating adorable 2D game character designs. Generate detailed, appealing character sprites that are suitable for animation and game development.",
+    "user_prompt_template": "Create a digital pet character image:\n\nSpecies: {species}\nColor Theme: {color}\nPersonality: {personality}\n\nCRITICAL REQUIREMENTS:\n\n1. PIXEL ART STYLE:\n   - MUST be pixel art style (not realistic, not painted, not sketch)\n   - Clear, defined pixels with limited color palette\n   - Game sprite aesthetic\n\n2. BACKGROUND:\n   - Solid white background (#FFFFFF)\n   - Keep background simple and clean\n\n3. COLOR THEME:\n   - Use {color} as the overall color theme/tone\n   - This is a guide for the overall aesthetic, NOT a requirement to make everything uniformly {color}\n   - Feel free to use complementary colors, shading, highlights, and accents\n   - The character should feel cohesive with the {color} theme while having natural color variation\n   - Example: If color theme is \"blue\", the pet might have blue as primary color with white belly, pink nose, darker blue shading, etc.\n\n4. MAIN SUBJECT FOCUS:\n   - Pet should be the ONLY subject\n   - NO unnecessary effects, sparkles, or decorations\n   - NO background objects or scenery\n   - Clean, simple character sprite only\n\nStyle requirements:\n- Clear silhouette, easy to recognize\n- Suitable for animation (clear body parts, limbs)\n- Centered in frame\n- Friendly and appealing design\n- Character should embody the {personality} personality traits through pose and expression\n- The {species} should be recognizable in the design\n\nTechnical specs:\n- Square aspect ratio (512x512 or similar)\n- Clean lines, good contrast\n- Game-ready character sprite\n- Idle/neutral pose\n- Full body visible (head to feet/tail)\n\nGenerate a cute, memorable digital pet character.",
+    "variables": [
+        "species",
+        "color",
+        "personality"
+    ],
+    "output_format": "image",
+    "notes": "Custom pet appearance generation with user-specified species, color theme, and personality. The color parameter defines the overall aesthetic tone but allows for natural color variation and complementary colors."
+}

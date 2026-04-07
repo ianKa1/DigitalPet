@@ -154,9 +154,9 @@ Example: {
 
 ## Template Types
 
-### 1. Pet Generation Template
+### 1. Pet Description Generation Template
 
-**File**: `pet_generation.json`
+**File**: `pet_desrciption_generation.json`
 
 **Purpose**: Generate a completely new pet from scratch.
 
@@ -187,9 +187,9 @@ Example: {
 
 ---
 
-### 2. Action Generation Template
+### 2. Action Description Generation Template
 
-**File**: `action_generation.json`
+**File**: `action_desrciption_generation.json`
 
 **Purpose**: Generate appropriate actions for a pet based on its characteristics.
 
@@ -214,9 +214,9 @@ Example: {
 
 ---
 
-### 3. Image Generation Template
+### 3. Pet Appearance Generation Template
 
-**File**: `image_generation.json`
+**File**: `pet_appearance_generation.json`
 
 **Purpose**: Generate the base character image for a pet.
 
@@ -238,9 +238,9 @@ Example: {
 
 ---
 
-### 4. Animation Generation Template
+### 4. Sprite Animation Generation Template
 
-**File**: `animation_generation.json`
+**File**: `sprite_animation_generation.json`
 
 **Purpose**: Generate sprite sheet animations for specific actions.
 
@@ -257,6 +257,10 @@ Example: {
   "output_format": "image"
 }
 ```
+
+**Additional File**: `sprite_animation_generation_batch.json`
+
+**Purpose**: Generate all sprite animations in a single batch API call for efficiency and consistency.
 
 **Usage**: Most complex template, combines all pet data with specific action details.
 

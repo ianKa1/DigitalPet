@@ -1,7 +1,7 @@
 """Generate pet actions based on personality using LLM."""
 import json
 from anthropic import Anthropic
-import config
+from .. import config
 
 
 def generate_pet_actions(pet_description):

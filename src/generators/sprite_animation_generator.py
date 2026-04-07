@@ -4,8 +4,8 @@ import json
 from datetime import datetime
 from google import genai
 from PIL import Image
-import config
-from prompt_manager import PromptManager
+from .. import config
+from ..prompt_manager import PromptManager
 
 
 def generate_sprite_animations(pet_description, actions, action_descriptions=None):
@@ -489,7 +489,7 @@ def generate_sprite_animations_batch(pet_description, actions, action_descriptio
 
     # Build batch prompt using PromptManager
     try:
-        prompt = pm.build_prompt("animation_generation_batch", {
+        prompt = pm.build_prompt("sprite_animation_generation_batch", {
             "species": species,
             "actions_text": actions_text,
             "appearance": appearance,
@@ -533,15 +533,14 @@ def generate_sprite_animations_batch(pet_description, actions, action_descriptio
 
                 # Process the sprite sheet to extract individual GIFs
                 pet_dir = os.path.join(config.PETS_DIR, name)
-                # metadata = _process_batch_sprite_sheet(
-                #     filename,
-                #     actions,
-                #     action_descriptions,
-                #     pet_dir,
-                #     name
-                # )
-                # return metadata
-                return None
+                metadata = _process_batch_sprite_sheet(
+                    filename,
+                    actions,
+                    action_descriptions,
+                    pet_dir,
+                    name
+                )
+                return metadata
 
         print(f"    ⚠️  No image generated")
         return None

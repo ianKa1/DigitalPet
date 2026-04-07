@@ -18,27 +18,27 @@ All templates are now in JSON format with the following structure:
 
 ## Available Templates
 
-### pet_generation.json
+### pet_desrciption_generation.json
 - **Purpose**: Generate a unique pet with personality and appearance using LLM
 - **Variables**: None (creates pet from scratch)
 - **Output**: JSON object with name, species, personality, appearance, special_ability
 
-### action_generation.json
+### action_desrciption_generation.json
 - **Purpose**: Generate appropriate actions for a pet based on its characteristics
 - **Variables**: `species`, `personality`, `special_ability`
 - **Output**: JSON array of action names
 
-### image_generation.json
+### pet_appearance_generation.json
 - **Purpose**: Generate the base pet character image
 - **Variables**: `species`, `personality`, `appearance`
 - **Output**: Image via image generation API
 
-### animation_generation.json
+### sprite_animation_generation.json
 - **Purpose**: Generate sprite sheet animations for pet actions (individual)
 - **Variables**: `species`, `personality`, `appearance`, `special_ability`, `action`, `action_description`
 - **Output**: Image (sprite sheet) via image generation API
 
-### animation_generation_batch.json
+### sprite_animation_generation_batch.json
 - **Purpose**: Generate all sprite sheet animations in a single batch API call
 - **Variables**: `species`, `personality`, `appearance`, `special_ability`, `actions_text`, `num_actions`
 - **Output**: Image (combined sprite sheet) via image generation API
@@ -51,7 +51,7 @@ from prompt_manager import PromptManager
 pm = PromptManager()
 
 # Simple usage
-prompt = pm.build_prompt("pet_generation")
+prompt = pm.build_prompt("pet_desrciption_generation")
 
 # With data substitution
 prompt = pm.build_animation_prompt(
@@ -77,12 +77,11 @@ To customize prompts:
 2. Add or remove variables as needed
 3. The PromptManager will automatically reload templates (caching is per-session)
 
-## Legacy Files
+## Notes
 
-The old `.txt` format templates are kept for reference:
-- `pet_generation.txt`
-- `action_generation.txt`
-- `image_generation.txt`
-- `animation_generation.txt`
-
-These can be safely removed once all generators are migrated to use PromptManager.
+All prompt templates follow a consistent naming convention:
+- `pet_desrciption_generation.json` - Pet personality and description
+- `action_desrciption_generation.json` - Action generation
+- `pet_appearance_generation.json` - Visual appearance/image
+- `sprite_animation_generation.json` - Individual animations
+- `sprite_animation_generation_batch.json` - Batch animations

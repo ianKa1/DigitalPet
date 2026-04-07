@@ -122,7 +122,7 @@ class PromptManager:
             "action_description": action_description or f"{action}ing"
         }
 
-        return self.build_prompt("animation_generation", data)
+        return self.build_prompt("sprite_animation_generation", data)
 
     def build_image_prompt(
         self,
@@ -143,7 +143,7 @@ class PromptManager:
             "personality": ", ".join(pet_data.get("personality", []))
         }
 
-        return self.build_prompt("image_generation", data)
+        return self.build_prompt("pet_appearance_generation", data)
 
     def build_action_generation_prompt(
         self,
@@ -164,7 +164,7 @@ class PromptManager:
             "special_ability": pet_data.get("special_ability", "")
         }
 
-        return self.build_prompt("action_generation", data)
+        return self.build_prompt("action_desrciption_generation", data)
 
     def get_template_variables(self, template_name: str) -> list:
         """
