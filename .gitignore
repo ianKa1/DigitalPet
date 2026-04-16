@@ -38,7 +38,9 @@ generated_pets/
 *.gif
 *.jpg
 *.jpeg
-# Track images in example pet (Fluffball)
+# Track all files in example pet (Fluffball)
+!output/pets/Fluffball/**/*
+!tests/background/park.jpg
 !output/pets/Fluffball/*.png
 !output/pets/Fluffball/*.gif
 !output/pets/Fluffball/*.jpg
