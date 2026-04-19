@@ -1,0 +1,31 @@
+{
+  "name": "electron-pet",
+  "version": "1.0.0",
+  "description": "Desktop pet companion app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "electron-builder --mac",
+    "package": "electron-builder"
+  },
+  "keywords": ["electron", "pet", "desktop"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.digitalpet.electron",
+    "mac": {
+      "category": "public.app-category.entertainment",
+      "target": ["dir"]
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*"
+    ]
+  }
+}
