@@ -23,5 +23,23 @@ contextBridge.exposeInMainWorld('electronAPI', {
    * @param {number} x - X coordinate
    * @param {number} y - Y coordinate
    */
-  savePosition: (x, y) => ipcRenderer.send('save-position', { x, y })
+  savePosition: (x, y) => ipcRenderer.send('save-position', { x, y }),
+
+  /**
+   * Change pet state
+   * @param {string} state - New state name ('idle', 'dragged', etc.)
+   */
+  changeState: (state) => ipcRenderer.send('change-state', state),
+
+  /**
+   * Listen for state changes from main process
+   * @param {function} callback - Called with {state, gifPath} when state changes
+   */
+  onStateChanged: (callback) => ipcRenderer.on('state-changed', (event, data) => callback(data)),
+
+  /**
+   * Get current state
+   * @returns {Promise<{state: string, gif: string}>} Current state and GIF filename
+   */
+  getCurrentState: () => ipcRenderer.invoke('get-current-state')
 });

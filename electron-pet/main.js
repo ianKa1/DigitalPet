@@ -1,8 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const StateManager = require('./stateManager');
 
 let mainWindow = null;
+let stateManager = null;
 
 /**
  * Get the path to the position config file
@@ -83,9 +85,10 @@ function createWindow() {
 
 // IPC Handlers
 
-// Get the GIF path for the pet
+// Get the GIF path for the pet (state-aware)
 ipcMain.handle('get-gif-path', () => {
-  return path.join(__dirname, 'assets', 'Fluffball', 'animations', 'idle.gif');
+  const gifFileName = stateManager ? stateManager.getCurrentGif() : 'idle.gif';
+  return path.join(__dirname, 'assets', 'Fluffball', 'animations', gifFileName);
 });
 
 // Move window to new position
@@ -101,9 +104,37 @@ ipcMain.on('save-position', (event, { x, y }) => {
   savePosition(Math.round(x), Math.round(y));
 });
 
+// Handle state change request from renderer
+ipcMain.on('change-state', (event, newState) => {
+  try {
+    const gifFileName = stateManager.setState(newState);
+    const fullPath = path.join(__dirname, 'assets', 'Fluffball', 'animations', gifFileName);
+
+    // Send new GIF path back to renderer
+    event.reply('state-changed', {
+      state: newState,
+      gifPath: fullPath
+    });
+  } catch (error) {
+    console.error('State change error:', error);
+    // Don't crash - just log the error
+  }
+});
+
+// Get current state (for initialization or debugging)
+ipcMain.handle('get-current-state', () => {
+  return {
+    state: stateManager.getCurrentState(),
+    gif: stateManager.getCurrentGif()
+  };
+});
+
 // App lifecycle
 
 app.whenReady().then(() => {
+  // Initialize state manager
+  stateManager = new StateManager('idle');
+
   createWindow();
 
   // macOS: Re-create window when dock icon clicked

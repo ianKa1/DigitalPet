@@ -38,6 +38,9 @@ function handleMouseDown(event) {
 
   // Update cursor
   petContainer.classList.add('dragging');
+
+  // Change state to 'dragged'
+  window.electronAPI.changeState('dragged');
 }
 
 /**
@@ -73,6 +76,9 @@ function handleMouseUp(event) {
   const finalX = event.screenX - mouseOffsetX;
   const finalY = event.screenY - mouseOffsetY;
   window.electronAPI.savePosition(finalX, finalY);
+
+  // Return to 'idle' state
+  window.electronAPI.changeState('idle');
 }
 
 // Event Listeners
@@ -91,4 +97,15 @@ document.addEventListener('mouseup', handleMouseUp);
 // Prevent context menu (right-click) for cleaner UX
 document.addEventListener('contextmenu', (event) => {
   event.preventDefault();
+});
+
+// Listen for state changes from main process
+window.electronAPI.onStateChanged((data) => {
+  const { state, gifPath } = data;
+
+  // Update GIF immediately
+  petGif.src = gifPath;
+
+  // Log for debugging
+  console.log(`State changed to: ${state}`);
 });
