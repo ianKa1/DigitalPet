@@ -13,10 +13,11 @@ const { screen } = require('electron');
 const WANDER_CONFIG = {
   minInterval: 3000,      // Minimum ms between movements
   maxInterval: 8000,      // Maximum ms between movements
-  minDistance: 100,       // Minimum pixels to move
-  maxDistance: 300,       // Maximum pixels to move
   fps: 60,                // Animation frame rate
   speed: 150,             // Pixels per second
+  // Distance is calculated dynamically based on screen size:
+  // - Horizontal: 1/5 to 2/5 of screen width
+  // - Vertical: 1/5 to 2/5 of screen height
 };
 
 /**
@@ -216,18 +217,25 @@ class WanderManager {
     const minX = screenBounds.x;
     const minY = screenBounds.y;
 
+    // Calculate minimum distances based on screen size (1/5 of screen dimensions)
+    const minHorizontalDist = screenBounds.width / 5;
+    const minVerticalDist = screenBounds.height / 5;
+
     let attempts = 0;
-    const maxAttempts = 10;
+    const maxAttempts = 20;
 
     while (attempts < maxAttempts) {
-      // Random angle and distance
-      const angle = Math.random() * 2 * Math.PI;
-      const distance = WANDER_CONFIG.minDistance +
-        Math.random() * (WANDER_CONFIG.maxDistance - WANDER_CONFIG.minDistance);
+      // Random horizontal and vertical distances (at least 1/5 screen size)
+      const horizontalDist = minHorizontalDist + Math.random() * minHorizontalDist;
+      const verticalDist = minVerticalDist + Math.random() * minVerticalDist;
+
+      // Random directions (positive or negative)
+      const xDirection = Math.random() < 0.5 ? -1 : 1;
+      const yDirection = Math.random() < 0.5 ? -1 : 1;
 
       // Calculate target
-      const targetX = current.x + Math.cos(angle) * distance;
-      const targetY = current.y + Math.sin(angle) * distance;
+      const targetX = current.x + (horizontalDist * xDirection);
+      const targetY = current.y + (verticalDist * yDirection);
 
       // Check if within bounds
       if (targetX >= minX && targetX <= maxX &&
@@ -238,14 +246,22 @@ class WanderManager {
       attempts++;
     }
 
-    // Fallback: clamp to bounds
-    const angle = Math.random() * 2 * Math.PI;
-    const distance = WANDER_CONFIG.minDistance;
-    let targetX = current.x + Math.cos(angle) * distance;
-    let targetY = current.y + Math.sin(angle) * distance;
+    // Fallback: try smaller movements in valid directions
+    const availableRight = maxX - current.x;
+    const availableLeft = current.x - minX;
+    const availableDown = maxY - current.y;
+    const availableUp = current.y - minY;
 
-    targetX = Math.max(minX, Math.min(maxX, targetX));
-    targetY = Math.max(minY, Math.min(maxY, targetY));
+    // Choose direction with most space
+    const xDirection = availableRight > availableLeft ? 1 : -1;
+    const yDirection = availableDown > availableUp ? 1 : -1;
+
+    // Use smaller distance if needed to stay on screen
+    const horizontalDist = Math.min(minHorizontalDist, xDirection > 0 ? availableRight : availableLeft);
+    const verticalDist = Math.min(minVerticalDist, yDirection > 0 ? availableDown : availableUp);
+
+    const targetX = current.x + (horizontalDist * xDirection);
+    const targetY = current.y + (verticalDist * yDirection);
 
     return { x: targetX, y: targetY };
   }
