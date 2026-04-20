@@ -24,12 +24,18 @@ const STATE_CONFIG = {
     // transitions: [],
     // sound: null,
   },
+  wander: {
+    gif: 'hop.gif',
+    // Future properties (placeholder):
+    // duration: null,
+    // transitions: [],
+    // sound: null,
+  },
   // Future states (placeholder):
   // clicked: { gif: 'bounce.gif' },
   // sleeping: { gif: 'sleep.gif' },
   // curious: { gif: 'curious_look.gif' },
   // wiggle: { gif: 'wiggle_ears.gif' },
-  // hop: { gif: 'hop.gif' },
 };
 
 /**

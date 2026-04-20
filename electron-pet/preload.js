@@ -41,5 +41,25 @@ contextBridge.exposeInMainWorld('electronAPI', {
    * Get current state
    * @returns {Promise<{state: string, gif: string}>} Current state and GIF filename
    */
-  getCurrentState: () => ipcRenderer.invoke('get-current-state')
+  getCurrentState: () => ipcRenderer.invoke('get-current-state'),
+
+  /**
+   * Start autonomous wander behavior
+   */
+  startWander: () => ipcRenderer.send('start-wander'),
+
+  /**
+   * Stop autonomous wander behavior
+   */
+  stopWander: () => ipcRenderer.send('stop-wander'),
+
+  /**
+   * Pause wander behavior temporarily
+   */
+  pauseWander: () => ipcRenderer.send('pause-wander'),
+
+  /**
+   * Resume wander behavior after pause
+   */
+  resumeWander: () => ipcRenderer.send('resume-wander')
 });

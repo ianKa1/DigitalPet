@@ -2,9 +2,11 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const StateManager = require('./stateManager');
+const WanderManager = require('./wanderManager');
 
 let mainWindow = null;
 let stateManager = null;
+let wanderManager = null;
 
 /**
  * Get the path to the position config file
@@ -129,6 +131,34 @@ ipcMain.handle('get-current-state', () => {
   };
 });
 
+// Start wander behavior
+ipcMain.on('start-wander', () => {
+  if (wanderManager) {
+    wanderManager.start();
+  }
+});
+
+// Stop wander behavior
+ipcMain.on('stop-wander', () => {
+  if (wanderManager) {
+    wanderManager.stop();
+  }
+});
+
+// Pause wander behavior (e.g., during drag)
+ipcMain.on('pause-wander', () => {
+  if (wanderManager) {
+    wanderManager.pause();
+  }
+});
+
+// Resume wander behavior
+ipcMain.on('resume-wander', () => {
+  if (wanderManager) {
+    wanderManager.resume();
+  }
+});
+
 // App lifecycle
 
 app.whenReady().then(() => {
@@ -136,6 +166,22 @@ app.whenReady().then(() => {
   stateManager = new StateManager('idle');
 
   createWindow();
+
+  // Initialize wander manager with state change callback
+  wanderManager = new WanderManager(mainWindow, (newState) => {
+    if (stateManager) {
+      const gifFileName = stateManager.setState(newState);
+      const fullPath = path.join(__dirname, 'assets', 'Fluffball', 'animations', gifFileName);
+
+      // Notify renderer of state change
+      if (mainWindow) {
+        mainWindow.webContents.send('state-changed', {
+          state: newState,
+          gifPath: fullPath
+        });
+      }
+    }
+  });
 
   // macOS: Re-create window when dock icon clicked
   app.on('activate', () => {

@@ -39,7 +39,8 @@ function handleMouseDown(event) {
   // Update cursor
   petContainer.classList.add('dragging');
 
-  // Change state to 'dragged'
+  // Pause wander behavior and change state to 'dragged'
+  window.electronAPI.pauseWander();
   window.electronAPI.changeState('dragged');
 }
 
@@ -77,14 +78,29 @@ function handleMouseUp(event) {
   const finalY = event.screenY - mouseOffsetY;
   window.electronAPI.savePosition(finalX, finalY);
 
-  // Return to 'idle' state
+  // Resume wander behavior and return to idle state
+  window.electronAPI.resumeWander();
   window.electronAPI.changeState('idle');
+}
+
+/**
+ * Initialize wander behavior on startup
+ */
+function initializeWander() {
+  // Start wander behavior after a brief delay to allow window to settle
+  setTimeout(() => {
+    window.electronAPI.startWander();
+    console.log('Wander behavior started');
+  }, 1000);
 }
 
 // Event Listeners
 
-// Load GIF when page loads
-document.addEventListener('DOMContentLoaded', loadGif);
+// Load GIF and initialize wander when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  loadGif();
+  initializeWander();
+});
 
 // Drag events on container
 petContainer.addEventListener('mousedown', handleMouseDown);
