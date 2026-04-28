@@ -1,0 +1,274 @@
+{
+  "image_width": 1702,
+  "image_height": 1276,
+  "total_frames": 100,
+  "actions": [
+    {
+      "action_name": "hop_around",
+      "start_frame": 0,
+      "end_frame": 40,
+      "description": "Creature hops playfully with bouncing motion along the path"
+    },
+    {
+      "action_name": "stop_curious",
+      "start_frame": 41,
+      "end_frame": 60,
+      "description": "Creature stops in the open to look around curiously"
+    },
+    {
+      "action_name": "bounce_to_float",
+      "start_frame": 61,
+      "end_frame": 100,
+      "description": "Creature makes a larger bounce and transitions into floating in the air"
+    }
+  ],
+  "waypoints": [
+    {
+      "frame": 0,
+      "x": 64,
+      "y": 625,
+      "action": "hop_around"
+    },
+    {
+      "frame": 2,
+      "x": 104,
+      "y": 605,
+      "action": "hop_around"
+    },
+    {
+      "frame": 4,
+      "x": 145,
+      "y": 625,
+      "action": "hop_around"
+    },
+    {
+      "frame": 6,
+      "x": 185,
+      "y": 605,
+      "action": "hop_around"
+    },
+    {
+      "frame": 8,
+      "x": 225,
+      "y": 625,
+      "action": "hop_around"
+    },
+    {
+      "frame": 10,
+      "x": 266,
+      "y": 612,
+      "action": "hop_around"
+    },
+    {
+      "frame": 12,
+      "x": 306,
+      "y": 632,
+      "action": "hop_around"
+    },
+    {
+      "frame": 14,
+      "x": 346,
+      "y": 612,
+      "action": "hop_around"
+    },
+    {
+      "frame": 16,
+      "x": 387,
+      "y": 632,
+      "action": "hop_around"
+    },
+    {
+      "frame": 18,
+      "x": 427,
+      "y": 627,
+      "action": "hop_around"
+    },
+    {
+      "frame": 20,
+      "x": 468,
+      "y": 647,
+      "action": "hop_around"
+    },
+    {
+      "frame": 22,
+      "x": 508,
+      "y": 627,
+      "action": "hop_around"
+    },
+    {
+      "frame": 24,
+      "x": 548,
+      "y": 647,
+      "action": "hop_around"
+    },
+    {
+      "frame": 26,
+      "x": 589,
+      "y": 650,
+      "action": "hop_around"
+    },
+    {
+      "frame": 28,
+      "x": 629,
+      "y": 670,
+      "action": "hop_around"
+    },
+    {
+      "frame": 30,
+      "x": 669,
+      "y": 650,
+      "action": "hop_around"
+    },
+    {
+      "frame": 32,
+      "x": 710,
+      "y": 670,
+      "action": "hop_around"
+    },
+    {
+      "frame": 34,
+      "x": 750,
+      "y": 679,
+      "action": "hop_around"
+    },
+    {
+      "frame": 36,
+      "x": 790,
+      "y": 699,
+      "action": "hop_around"
+    },
+    {
+      "frame": 38,
+      "x": 831,
+      "y": 679,
+      "action": "hop_around"
+    },
+    {
+      "frame": 40,
+      "x": 871,
+      "y": 699,
+      "action": "hop_around"
+    },
+    {
+      "frame": 41,
+      "x": 871,
+      "y": 699,
+      "action": "stop_curious"
+    },
+    {
+      "frame": 45,
+      "x": 871,
+      "y": 699,
+      "action": "stop_curious"
+    },
+    {
+      "frame": 50,
+      "x": 871,
+      "y": 699,
+      "action": "stop_curious"
+    },
+    {
+      "frame": 55,
+      "x": 871,
+      "y": 699,
+      "action": "stop_curious"
+    },
+    {
+      "frame": 60,
+      "x": 871,
+      "y": 699,
+      "action": "stop_curious"
+    },
+    {
+      "frame": 61,
+      "x": 871,
+      "y": 699,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 63,
+      "x": 901,
+      "y": 659,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 65,
+      "x": 932,
+      "y": 699,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 67,
+      "x": 962,
+      "y": 669,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 69,
+      "x": 992,
+      "y": 639,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 72,
+      "x": 1038,
+      "y": 599,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 75,
+      "x": 1083,
+      "y": 560,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 78,
+      "x": 1129,
+      "y": 526,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 81,
+      "x": 1174,
+      "y": 498,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 84,
+      "x": 1220,
+      "y": 476,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 87,
+      "x": 1265,
+      "y": 460,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 90,
+      "x": 1311,
+      "y": 449,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 93,
+      "x": 1356,
+      "y": 445,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 96,
+      "x": 1402,
+      "y": 446,
+      "action": "bounce_to_float"
+    },
+    {
+      "frame": 100,
+      "x": 1462,
+      "y": 453,
+      "action": "bounce_to_float"
+    }
+  ],
+  "notes": "The path starts at ground level near the bike and follows the walking path towards the right. Hopping introduces small vertical bounces. The stop location is a clear area on the path. The final floating action begins with a bounce and then lifts off, floating up and away over the grass area."
+}

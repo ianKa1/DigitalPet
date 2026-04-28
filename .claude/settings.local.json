@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ln:*)",
+      "Bash(npm install:*)",
+      "Bash(pgrep:*)",
+      "Bash(npm start)"
+    ]
+  }
+}
