@@ -4,6 +4,7 @@ from datetime import datetime
 from google import genai
 from .. import config
 from ..prompt_manager import PromptManager
+from ..utils.tokenrouter_helper import call_tokenrouter_api
 
 
 def generate_pet_image(pet_description):
@@ -34,12 +35,16 @@ def generate_pet_image(pet_description):
     print(f"📸 Generating pet image with Gemini Flash Image...")
     print(f"   Pet: {pet_description.get('name', 'Unknown')} ({pet_description.get('species', 'Unknown')})")
 
-    # Call Gemini Flash Image API
+    # Call Gemini Flash Image API via TokenRouter
     try:
-        response = client.models.generate_content(
-            model="gemini-3.1-flash-image-preview",
-            contents=prompt
-        )
+        # response = client.models.generate_content(
+        #     model="gemini-3.1-flash-image-preview",
+        #     contents=prompt
+        # )
+        response = call_tokenrouter_api(prompt, model="google/gemini-3.1-flash-image-preview")
+
+        if response is None:
+            return None
 
         # Process response and save image
         image_saved = False
@@ -109,12 +114,16 @@ def generate_custom_pet_image(species, color, personality, output_name=None):
     print(f"   Color theme: {color}")
     print(f"   Personality: {personality}")
 
-    # Call Gemini Flash Image API
+    # Call Gemini Flash Image API via TokenRouter
     try:
-        response = client.models.generate_content(
-            model="gemini-3.1-flash-image-preview",
-            contents=prompt
-        )
+        # response = client.models.generate_content(
+        #     model="gemini-3.1-flash-image-preview",
+        #     contents=prompt
+        # )
+        response = call_tokenrouter_api(prompt, model="google/gemini-3.1-flash-image-preview")
+
+        if response is None:
+            return None
 
         # Process response and save image
         image_saved = False
