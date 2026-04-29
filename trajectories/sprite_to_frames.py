@@ -17,6 +17,7 @@ Usage:
 
 Requirements:
     pip install pillow numpy
+    pip install rembg (removes background)
 """
 
 import os
@@ -153,26 +154,98 @@ def pick_row_interactively(num_rows: int) -> int:
 # BACKGROUND REMOVAL
 # ─────────────────────────────────────────────
 
+# def remove_white_bg(frame: Image.Image, tolerance: int = 20) -> Image.Image:
+#     """
+#     Remove solid white (or near-white) background from a frame.
+
+#     Pixels where R, G, B are all above (255 - tolerance) become transparent.
+#     Lower tolerance = only pure white removed.
+#     Higher tolerance = more off-white shades removed (use carefully or edges suffer).
+
+#     Returns RGBA image.
+#     """
+#     rgba = frame.convert("RGBA")
+#     data = np.array(rgba, dtype=np.int32)
+
+#     r, g, b = data[:, :, 0], data[:, :, 1], data[:, :, 2]
+#     cutoff = 255 - tolerance
+
+#     is_white = (r >= cutoff) & (g >= cutoff) & (b >= cutoff)
+#     data[:, :, 3] = np.where(is_white, 0, data[:, :, 3])
+
+#     return Image.fromarray(data.astype(np.uint8), "RGBA")
+
+# Remove based on border
 def remove_white_bg(frame: Image.Image, tolerance: int = 20) -> Image.Image:
     """
-    Remove solid white (or near-white) background from a frame.
+    Remove white background from a frame using flood-fill from the image edges.
 
-    Pixels where R, G, B are all above (255 - tolerance) become transparent.
+    Only pixels that are near-white AND connected to the image border are made
+    transparent. This preserves white or light-colored areas inside the creature
+    that a global threshold would incorrectly erase.
+
     Lower tolerance = only pure white removed.
-    Higher tolerance = more off-white shades removed (use carefully or edges suffer).
+    Higher tolerance = more off-white shades removed (safe to raise without
+    affecting interior highlights, since fill stays outside the creature).
 
     Returns RGBA image.
     """
-    rgba = frame.convert("RGBA")
-    data = np.array(rgba, dtype=np.int32)
+    from collections import deque
 
-    r, g, b = data[:, :, 0], data[:, :, 1], data[:, :, 2]
+    rgba = frame.convert("RGBA")
+    data = np.array(rgba, dtype=np.uint8)
+    h, w = data.shape[:2]
     cutoff = 255 - tolerance
 
-    is_white = (r >= cutoff) & (g >= cutoff) & (b >= cutoff)
-    data[:, :, 3] = np.where(is_white, 0, data[:, :, 3])
+    r, g, b = data[:, :, 0], data[:, :, 1], data[:, :, 2]
+    is_near_white = (r >= cutoff) & (g >= cutoff) & (b >= cutoff)
 
-    return Image.fromarray(data.astype(np.uint8), "RGBA")
+    # BFS flood-fill seeded from all near-white edge pixels
+    visited = np.zeros((h, w), dtype=bool)
+    queue = deque()
+
+    for x in range(w):
+        for y in (0, h - 1):
+            if is_near_white[y, x] and not visited[y, x]:
+                visited[y, x] = True
+                queue.append((y, x))
+    for y in range(h):
+        for x in (0, w - 1):
+            if is_near_white[y, x] and not visited[y, x]:
+                visited[y, x] = True
+                queue.append((y, x))
+
+    while queue:
+        y, x = queue.popleft()
+        for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            ny, nx = y + dy, x + dx
+            if 0 <= ny < h and 0 <= nx < w and not visited[ny, nx] and is_near_white[ny, nx]:
+                visited[ny, nx] = True
+                queue.append((ny, nx))
+
+    data[:, :, 3] = np.where(visited, 0, data[:, :, 3])
+    return Image.fromarray(data, "RGBA")
+
+
+def remove_bg_ml(frame: Image.Image) -> Image.Image:
+    """
+    Remove background using rembg's neural matting model (BRIA-RMBG / U²-Net).
+
+    Produces a clean alpha mask that correctly handles anti-aliased edges,
+    mixed-color borders, and white/black pixels that are part of the character.
+    No tolerance tuning needed.
+
+    Requires:  pip install rembg
+    On first run the model weights (~170 MB) are downloaded automatically.
+
+    Returns RGBA image with background fully transparent.
+    """
+    try:
+        from rembg import remove as rembg_remove
+    except ImportError:
+        raise ImportError("rembg is required for ML background removal: pip install rembg")
+
+    return rembg_remove(frame.convert("RGBA"))
 
 
 # ─────────────────────────────────────────────
@@ -226,7 +299,8 @@ def extract_row_frames(
         frame = img.crop((left, top, right, bottom))
 
         if remove_bg:
-            frame = remove_white_bg(frame, tolerance=bg_tolerance)
+            frame = remove_bg_ml(frame)
+            # frame = remove_white_bg(frame, tolerance=bg_tolerance)
 
         frames.append(frame)
 
