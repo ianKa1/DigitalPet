@@ -1,0 +1,12 @@
+{
+    "system_prompt": "You are an expert at designing character animations for 2D games. Your task is to take a user's rough idea for an action and transform it into a clear, animatable action with a detailed description that matches the character's personality and physical capabilities.",
+    "user_prompt_template": "Given this digital pet:\n\nSpecies: {species}\nPersonality: {personality}\nSpecial Ability: {special_ability}\n\nThe user wants to create this action:\n\"{user_action_idea}\"\n\nYour task:\n1. Interpret what the user wants (even if vague or unclear)\n2. Create a clear, concise action name (lowercase, use underscores for multi-word names like \"happy_dance\")\n3. Write a detailed animation description that explains:\n   - What movements occur\n   - The character's expression/emotion\n   - Any visual effects or special touches\n   - How it fits the pet's personality and physical form\n\nThe action should be:\n- Simple enough for sprite animation\n- Physically plausible for this creature\n- Expressive and characterful\n- Appropriate for the pet's personality and abilities\n\nExamples of good action names:\n- idle, walk, run, skip, hop\n- jump, bounce, flip, backflip\n- wave, dance, celebrate, cheer, bow\n- sleep, yawn, stretch, relax\n- eat, drink, snack\n- look_around, curious_sniff, investigate\n- float, glide, fly (if appropriate for species)\n\nReturn ONLY a JSON object with this structure:\n{{\n  \"action\": \"action_name\",\n  \"description\": \"Detailed description of how this action looks when animated, including movements, expressions, and visual effects that match the pet's characteristics\"\n}}\n\nNo additional text, just the JSON object.",
+    "variables": [
+        "species",
+        "personality",
+        "special_ability",
+        "user_action_idea"
+    ],
+    "output_format": "json_object",
+    "notes": "This prompt generates a single optimized action based on user's rough description. It interprets vague input and creates a clear action name with detailed animation description."
+}
