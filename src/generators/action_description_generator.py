@@ -94,7 +94,7 @@ def generate_pet_actions(pet_description):
         return []
     
     
-def generate_single_action_description(pet_description, rough_action_desc):
+def generate_single_action_description(pet_description, rough_action_name, rough_action_desc):
     """
     Generate a single optimized action based on user's rough description.
     Adds the action to the pet's existing actions in pet_info.json.
@@ -172,6 +172,8 @@ def generate_single_action_description(pet_description, rough_action_desc):
             if "action_descriptions" not in pet_info:
                 pet_info["action_descriptions"] = {}
 
+            # TODO: Use users' action name
+            action_name = rough_action_name
             # Check if action already exists
             if action_name in pet_info["actions"]:
                 print(f"   ⚠️  Action '{action_name}' already exists, updating description...")

@@ -1,0 +1,22 @@
+{
+  "actions": [
+    "idle",
+    "walk",
+    "jump",
+    "float",
+    "wave",
+    "celebrate",
+    "sleep",
+    "investigate"
+  ],
+  "action_descriptions": {
+    "idle": "Gentle breathing motion with slight body bob, relaxed stance. Creature stands naturally with occasional small movements like ear twitches, tail sway, or eye blinks. The body rises and falls subtly with each breath cycle, giving a living, resting quality without being completely still.",
+    "walk": "Smooth forward walking motion with alternating limb movement. Body bounces slightly with each step, showing natural weight and momentum. Head may bob gently in rhythm with the steps. Tail or other appendages sway naturally with the walking rhythm. Character moves at a steady, comfortable pace.",
+    "jump": "Powerful upward leap with clear anticipation, takeoff, and landing phases. Crouch down slightly before launch, then spring upward with legs extending and arms/wings lifting. At the peak, body stretches upward. Landing shows slight compression and recovery bounce. May include a small celebratory wiggle upon successful landing.",
+    "float": "Magical hovering motion with gentle vertical bobbing, as if suspended in water or air. Body rises and falls smoothly in a slow sine wave pattern. Limbs hang loosely or spread slightly for balance. Magical sparkles, aura, or energy effects may emanate from the creature. Movement feels weightless and dreamy.",
+    "wave": "Friendly greeting gesture with one limb/appendage raised and moving side to side. Body leans slightly in the direction of the wave. Creature may smile, make eye contact, or show other friendly expressions. The waving motion should be energetic but not frantic - inviting and warm. Can include a small bounce or hop for extra enthusiasm.",
+    "celebrate": "Joyful, energetic animation showing excitement and happiness. May include jumping, spinning, bouncing, or dancing movements. Arms/appendages raised high or spread wide. Expressions show pure delight - big smile, sparkling eyes, etc. Could involve confetti, sparkles, or other festive visual effects. Movement is dynamic and full of life.",
+    "sleep": "Peaceful resting animation showing deep relaxation. Creature settles into a comfortable sleeping position (curled up, lying down, etc.). Eyes closed, breathing slow and deep with pronounced rise and fall of body. May include occasional small twitches, dream movements, or gentle snoring effects. Overall feel is calm and serene.",
+    "investigate": "Curious exploration animation showing interest in surroundings. Creature leans forward, head tilted slightly in curiosity. Eyes wide and focused on point of interest. May include sniffing motions, head turns to examine from different angles, or reaching out tentatively to touch or interact with objects. Ears perk up, body language shows alertness and engagement."
+  }
+}
