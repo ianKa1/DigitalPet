@@ -6,6 +6,7 @@ from google import genai
 from PIL import Image
 from .. import config
 from ..prompt_manager import PromptManager
+from ..utils.tokenrouter_helper import call_tokenrouter_api
 
 
 def generate_sprite_animations(pet_description, actions, action_descriptions=None):
@@ -23,9 +24,13 @@ def generate_sprite_animations(pet_description, actions, action_descriptions=Non
     if not config.GEMINI_API_KEY:
         print("⚠️  GEMINI_API_KEY not set. Skipping animation generation.")
         return {}
+    
+    if not config.TOKENROUTER_API_KEY:
+        print("⚠️  TOKENROUTER_API_KEY not set. Skipping animation generation.")
+        return {}
 
     # Initialize Gemini client and PromptManager
-    client = genai.Client(api_key=config.GEMINI_API_KEY)
+    # client = genai.Client(api_key=config.GEMINI_API_KEY)
     pm = PromptManager()
 
     animation_paths = {}
@@ -75,12 +80,8 @@ def generate_sprite_animations(pet_description, actions, action_descriptions=Non
                 contents.append(reference_image)
                 contents.append("Use this as a reference for the character's appearance:")
             contents.append(prompt)
-
-            # Call Gemini Flash Image API
-            response = client.models.generate_content(
-                model="gemini-3.1-flash-image-preview",
-                contents=contents,
-            )
+            
+            response = call_tokenrouter_api(contents, model="google/gemini-3.1-flash-image-preview")
 
             # Process response and save image
             image_saved = False
@@ -449,9 +450,12 @@ def generate_sprite_animations_batch(pet_description, actions, action_descriptio
     if not config.GEMINI_API_KEY:
         print("⚠️  GEMINI_API_KEY not set. Skipping animation generation.")
         return None
+    
+    if not config.TOKENROUTER_API_KEY:
+        print("⚠️  TOKENROUTER_API_KEY not set. Skipping animation generation.")
+        return None
 
     # Initialize Gemini client and PromptManager
-    client = genai.Client(api_key=config.GEMINI_API_KEY)
     pm = PromptManager()
 
     name = pet_description.get("name", "pet")
@@ -513,10 +517,7 @@ def generate_sprite_animations_batch(pet_description, actions, action_descriptio
         contents.append(prompt)
 
         # Call Gemini Flash Image API
-        response = client.models.generate_content(
-            model="gemini-3.1-flash-image-preview",
-            contents=contents,
-        )
+        response = call_tokenrouter_api(contents, model="google/gemini-3.1-flash-image-preview")
 
         # Process response and save image
         for part in response.parts:

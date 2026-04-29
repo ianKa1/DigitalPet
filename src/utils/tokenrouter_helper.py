@@ -199,13 +199,53 @@ class ResponseWrapper:
             self.parts.append(PartWrapper(part_dict))
 
 
+def _build_multimodal_content(content_list):
+    """
+    Build multimodal content array for OpenAI API format.
+    Converts PIL Images to base64 data URLs.
+
+    Args:
+        content_list (list): Mixed list of PIL Images and strings
+
+    Returns:
+        list: Content array in OpenAI format
+    """
+    content = []
+
+    for item in content_list:
+        # Check if it's a PIL Image
+        if hasattr(item, 'save') and hasattr(item, 'mode'):
+            # Convert PIL Image to base64 data URL
+            buffered = BytesIO()
+            item.save(buffered, format="PNG")
+            img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+            data_url = f"data:image/png;base64,{img_base64}"
+
+            content.append({
+                "type": "image_url",
+                "image_url": {
+                    "url": data_url
+                }
+            })
+        elif isinstance(item, str):
+            # Text content
+            content.append({
+                "type": "text",
+                "text": item
+            })
+
+    return content
+
+
 def call_tokenrouter_api(prompt, model):
     """
     Call the TokenRouter API with the given prompt and model.
     Returns a response object compatible with Gemini SDK format.
 
     Args:
-        prompt (str): The input prompt to send to the API.
+        prompt (str or list): The input prompt. Can be:
+            - str: Simple text prompt
+            - list: Multimodal content with PIL Images and text
         model (str): The model to use for generation.
 
     Returns:
@@ -214,6 +254,13 @@ def call_tokenrouter_api(prompt, model):
     if not config.TOKENROUTER_API_KEY:
         print("⚠️  TOKENROUTER_API_KEY not set. Skipping API call.")
         return None
+
+    # Handle multimodal content (text + images)
+    if isinstance(prompt, list):
+        content = _build_multimodal_content(prompt)
+    else:
+        # Simple text prompt
+        content = prompt
 
     response = requests.post(
         url="https://api.tokenrouter.com/v1/chat/completions",
@@ -226,7 +273,7 @@ def call_tokenrouter_api(prompt, model):
             "messages": [
                 {
                     "role": "user",
-                    "content": prompt
+                    "content": content
                 }
             ]
         })
