@@ -1,0 +1,39 @@
+{
+  "name": "Snow",
+  "species": "Cloud Bunny",
+  "personality": [
+    "playful",
+    "curious",
+    "gentle",
+    "bouncy"
+  ],
+  "appearance": "A small fluffy creature that looks like a bunny made of soft white clouds. Has large sparkly blue eyes, tiny pink nose, and long floppy ears that seem to float. Its body is round and puffy like a cotton ball. Small paws peek out from the fluffy cloud body. Leaves tiny sparkles when it moves.",
+  "special_ability": "Can float on air currents and create small rainbow trails",
+  "created_at": "2026-04-03T00:00:00Z",
+  "generation_metadata": {
+    "llm_model": "claude-sonnet-4-5-20250929",
+    "image_generated": false,
+    "animations_generated": []
+  },
+  "actions": [
+    "rainbow_spin_float",
+    "idle",
+    "walk",
+    "jump",
+    "float",
+    "wave",
+    "celebrate",
+    "sleep",
+    "investigate"
+  ],
+  "action_descriptions": {
+    "idle": "The Cloud Bunny remains in a soft, grounded stance with its paws lightly touching the floor. The entire body expands and rises slightly as if filling with air, then compresses back down in a rhythmic, 3-second cycle. To emphasize its weightless nature, the long ears drift upward during the inhale and settle softly during the exhale. The bunny maintains a peaceful expression with a tiny, content smile. Occasional secondary motions include a quick twitch of the nose, a lazy sway of its cotton-like tail, and a single slow blink. Faint, shimmering prismatic particles sparkle within its 'cloud' fur as it moves, reinforcing its gentle and magical essence.",
+    "walk": "The Cloud Bunny moves forward with a rhythmic, low-gravity gait. Its front paws touch the ground softly while its hind legs push off with a springy lightness, causing the round, cloud-like body to squash slightly on impact and stretch upward at the peak of each step. The head bobs in a cheerful, curious cadence, ears flopping gently with the momentum. As it walks, its fluffy tail sways like a trailing mist, leaving a faint, shimmering rainbow streak that fades quickly behind it. The expression is one of gentle contentment, with wide, bright eyes looking forward as if discovering something new with every step.",
+    "jump": "The Cloud Bunny begins by crouching low, its fluffy body compressing like a squeezed marshmallow while its long ears pin back in focused anticipation. With a joyful chirp, it springs upward, its stubby legs fully extending and its small wings flapping once for extra lift. As it ascends, a shimmering arc of a rainbow trail follows its path. At the peak of the jump, the bunny's body stretches vertically, its eyes wide with wonder and its paws reaching for the sky. During the descent, it floats slightly\u2014buoyed by its natural lightness\u2014before landing softly. Upon impact, its body squishes down and rebounds into a quick, bubbly recovery bounce, finishing with a rapid, playful wiggle of its tail and ears.",
+    "float": "The Cloud Bunny enters a weightless state, its body elongating slightly as it rises and falls in a rhythmic, slow-motion sine wave. Its long ears drift upward and sway like seaweed in a gentle current, while its paws spread out softly to \u2018tread\u2019 the air. The bunny\u2019s expression is one of peaceful curiosity, with half-lidded eyes and a twitching nose. As it reaches the apex of each bob, faint shimmering rainbow trails bleed from its fur, and tiny golden sparkles puff out from beneath its paws, emphasizing its magical buoyancy and gentle nature.",
+    "wave": "The Cloud Bunny performs a light, vertical hop, momentarily suspended in the air by a gentle breeze. As it reaches the peak of its jump, it raises its right paw and executes a smooth, rhythmic side-to-side wave. Its body tilts softly with the momentum of the wave. The bunny\u2019s eyes are wide and sparkling with curiosity, paired with a broad, joyful smile. As the paw moves, a faint, shimmering rainbow trail follows the arc of the gesture. Upon landing, the bunny\u2019s soft, cloud-like body squashes slightly and then springs back to its original shape, maintaining a friendly and inviting posture.",
+    "celebrate": "The Cloud Bunny's body squashes down before launching into a high, buoyant leap. As it hits the apex, it performs a rapid 360-degree horizontal spin, causing its long ears to flare out like a helicopter blade. Its eyes are squeezed shut in a joyful 'v' shape with a wide, beaming smile. During the spin, a shimmering circular rainbow trail emerges from its tail, leaving behind a faint mist of sparkling prismatic particles. The bunny then floats gently back down to the ground, its paws spread wide in a cheering gesture, finishing with a small, elastic bounce upon landing.",
+    "sleep": "The Cloud Bunny gently deflates its paws and belly, settling its fluffy body into a soft, round puff on the ground. Its long ears droop sideways like wilted petals, and its eyes squeeze shut with a content, tiny smile. As it breathes, its entire body expands and contracts significantly, mimicking a bellows. To show its magical nature, the bunny intermittently emits tiny, faint rainbow-colored translucent bubbles from its nose that pop into sparkles. Occasionally, its hind leg gives a rhythmic 'thump-thump' twitch as if it is dreaming of hopping through the sky, causing its tail to release a small puff of white mist.",
+    "investigate": "The Cloud Bunny's fluffy body elongates as it leans forward while hovering, its tail wiggling with excitement. Its large ears perk up and twitch independently as it tilts its head from side to side in a rhythmic motion. The bunny performs a soft, rhythmic sniffing motion with its nose, causing subtle 'puffs' of vapor to emit from its nostrils. As it investigates a point of interest, it reaches out a tiny paw tentatively, creating a faint, shimmering rainbow trail that curves through the air following the paw's path. Its eyes remain wide and sparkling with focus, occasionally blinking rapidly to show intense engagement, perfectly capturing its playful and inquisitive nature."
+  }
+}

@@ -1,0 +1,179 @@
+[
+  {
+    "action": "walk",
+    "target_object": "grassy_hillside",
+    "path": [
+      [
+        580,
+        320
+      ],
+      [
+        500,
+        315
+      ],
+      [
+        420,
+        322
+      ],
+      [
+        340,
+        340
+      ],
+      [
+        270,
+        360
+      ],
+      [
+        200,
+        375
+      ]
+    ],
+    "description": "The character walks down the sloping grassy hill from the right side projectively towards the bottom left foreground."
+  },
+  {
+    "action": "investigate",
+    "target_object": "picnic_blanket",
+    "path": [
+      [
+        200,
+        375
+      ],
+      [
+        205,
+        380
+      ],
+      [
+        215,
+        370
+      ],
+      [
+        210,
+        365
+      ]
+    ],
+    "description": "Character stops near the edge of the foreground area to look around at the grass and the picnic setup."
+  },
+  {
+    "action": "walk",
+    "target_object": "walking_path",
+    "path": [
+      [
+        210,
+        365
+      ],
+      [
+        180,
+        320
+      ],
+      [
+        160,
+        280
+      ],
+      [
+        145,
+        240
+      ],
+      [
+        130,
+        210
+      ],
+      [
+        120,
+        195
+      ]
+    ],
+    "description": "Character turns and walks uphill toward the paved walking path cutting through the park."
+  },
+  {
+    "action": "wave",
+    "target_object": "people_on_path",
+    "path": [
+      [
+        120,
+        195
+      ],
+      [
+        122,
+        190
+      ],
+      [
+        118,
+        195
+      ],
+      [
+        122,
+        200
+      ]
+    ],
+    "description": "Character reaches the paved path and waves toward the people sitting on the benches further down the trail."
+  },
+  {
+    "action": "walk",
+    "target_object": "large_domed_building",
+    "path": [
+      [
+        122,
+        200
+      ],
+      [
+        150,
+        185
+      ],
+      [
+        200,
+        175
+      ],
+      [
+        250,
+        170
+      ],
+      [
+        290,
+        168
+      ]
+    ],
+    "description": "Character walks along the ridge of the hill toward the large domed church building in the background."
+  },
+  {
+    "action": "celebrate",
+    "target_object": "scenic_view",
+    "path": [
+      [
+        290,
+        168
+      ],
+      [
+        295,
+        155
+      ],
+      [
+        300,
+        168
+      ],
+      [
+        285,
+        168
+      ]
+    ],
+    "description": "Character stops at a scenic vantage point overlooking the palm trees and the church, performing a small joyful jump and arm raise."
+  },
+  {
+    "action": "idle",
+    "target_object": "park_landscape",
+    "path": [
+      [
+        285,
+        168
+      ],
+      [
+        285,
+        169
+      ],
+      [
+        286,
+        168
+      ]
+    ],
+    "description": "Character stands still for a moment, taking in the panoramic view of Dolores Park before continuing."
+  }
+]

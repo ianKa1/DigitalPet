@@ -1,0 +1,203 @@
+[
+  {
+    "action": "walk",
+    "target_object": "open_office_floor",
+    "path": [
+      [
+        950,
+        850
+      ],
+      [
+        900,
+        825
+      ],
+      [
+        850,
+        800
+      ],
+      [
+        800,
+        775
+      ],
+      [
+        750,
+        755
+      ],
+      [
+        700,
+        740
+      ],
+      [
+        650,
+        730
+      ]
+    ],
+    "description": "The character walks from the bottom right corner of the room towards the center table where the meeting is occurring."
+  },
+  {
+    "action": "investigate",
+    "target_object": "meeting_table_snacks",
+    "path": [
+      [
+        650,
+        730
+      ],
+      [
+        640,
+        720
+      ],
+      [
+        630,
+        715
+      ],
+      [
+        645,
+        710
+      ],
+      [
+        650,
+        730
+      ]
+    ],
+    "description": "The character leans in to inspect the bags of snacks and the water bottle on the left side of the table."
+  },
+  {
+    "action": "walk",
+    "target_object": "green_sofa",
+    "path": [
+      [
+        650,
+        730
+      ],
+      [
+        700,
+        725
+      ],
+      [
+        750,
+        710
+      ],
+      [
+        800,
+        690
+      ],
+      [
+        850,
+        670
+      ],
+      [
+        880,
+        650
+      ]
+    ],
+    "description": "The character walks behind the man in the grey blazer towards the green sofa in the background lounge area."
+  },
+  {
+    "action": "idle",
+    "target_object": "green_sofa",
+    "path": [
+      [
+        880,
+        650
+      ],
+      [
+        882,
+        648
+      ],
+      [
+        880,
+        650
+      ],
+      [
+        878,
+        652
+      ]
+    ],
+    "description": "The character stands still for a moment near the green sofa, observing the person sitting further back."
+  },
+  {
+    "action": "celebrate",
+    "target_object": "open_office_space",
+    "path": [
+      [
+        878,
+        652
+      ],
+      [
+        885,
+        640
+      ],
+      [
+        890,
+        655
+      ],
+      [
+        880,
+        660
+      ],
+      [
+        878,
+        652
+      ]
+    ],
+    "description": "The character does a small celebratory dance or gesture, perhaps happy with the productive atmosphere of the office."
+  },
+  {
+    "action": "walk",
+    "target_object": "window_area",
+    "path": [
+      [
+        878,
+        652
+      ],
+      [
+        800,
+        640
+      ],
+      [
+        700,
+        620
+      ],
+      [
+        600,
+        600
+      ],
+      [
+        500,
+        580
+      ],
+      [
+        450,
+        550
+      ]
+    ],
+    "description": "The character walks towards the large industrial windows to look out at the bright light."
+  },
+  {
+    "action": "wave",
+    "target_object": "man_in_grey_blazer",
+    "path": [
+      [
+        450,
+        550
+      ],
+      [
+        455,
+        545
+      ],
+      [
+        460,
+        550
+      ],
+      [
+        455,
+        555
+      ],
+      [
+        450,
+        550
+      ]
+    ],
+    "description": "From the window area, the character waves towards the speakers at the table before heading out."
+  }
+]
