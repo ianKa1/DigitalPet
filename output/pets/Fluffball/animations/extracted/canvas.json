@@ -79,7 +79,5 @@
         116
       ]
     }
-  },
-  "default_foot_offset_x_frac": 0.5,
-  "default_foot_offset_y_frac": 0.95
+  }
 }

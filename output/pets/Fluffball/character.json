@@ -1,0 +1,40 @@
+{
+  "character": {
+    "name": "Fluffball",
+    "frames_dir": "output/pets/Fluffball/animations/extracted",
+    "foot_offset_x_frac": 0.5,
+    "foot_offset_y_frac": 0.811,
+    "physical_thickness_m": 0.5,
+    "default_animation": "idle"
+  },
+  "animations": {
+    "bounce": {
+      "facing": "right",
+      "looping": true
+    },
+    "curious_look": {
+      "facing": "right",
+      "looping": true
+    },
+    "float": {
+      "facing": "right",
+      "looping": true
+    },
+    "hop": {
+      "facing": "right",
+      "looping": true
+    },
+    "idle": {
+      "facing": "right",
+      "looping": true
+    },
+    "sleep": {
+      "facing": "right",
+      "looping": true
+    },
+    "wiggle_ears": {
+      "facing": "right",
+      "looping": true
+    }
+  }
+}

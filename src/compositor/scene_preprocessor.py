@@ -31,9 +31,15 @@ from PIL import Image
 # CONFIG
 # ──────────────────────────────────────────────
 
+# Inputs
 SCENE_JSON      = "scene_data/scene.json"
-OUTPUT_DIR      = "scene_data"
-MASKS_DIR       = os.path.join(OUTPUT_DIR, "masks")
+
+# Outputs are namespaced under output/processed_scene/<image_basename>/
+# so multiple scenes can coexist without clobbering each other. The
+# default base directory is the parent; the per-scene subdir name is
+# derived from the scene image filename (e.g. street.png -> street/).
+OUTPUT_BASE_DIR = "output/processed_scene"
+
 SAM2_CHECKPOINT = "checkpoints/sam2_hiera_large.pt"
 SAM2_MODEL_CFG  = "sam2_hiera_l.yaml"
 
@@ -310,16 +316,25 @@ def write_processed_scene(scene_cfg: dict,
 # ──────────────────────────────────────────────
 
 def preprocess(scene_json_path: str = SCENE_JSON,
-               output_dir: str = OUTPUT_DIR,
+               output_dir: str = None,
+               output_base_dir: str = OUTPUT_BASE_DIR,
                sam2_checkpoint: str = SAM2_CHECKPOINT,
                sam2_model_cfg: str = SAM2_MODEL_CFG):
     """
     Run all scene preprocessing steps and write scene_processed.json.
+
+    Args:
+        scene_json_path: input config (image path + depth ref points)
+        output_dir: explicit output directory. If None (default), derived
+                    from the scene image filename so multiple processed
+                    scenes can coexist:
+                        testing_background/street.png
+                        -> output/processed_scene/street/
+        output_base_dir: parent directory used when output_dir is None.
+        sam2_checkpoint, sam2_model_cfg: SAM2 model paths.
+
     Returns the path to the processed scene JSON.
     """
-    masks_dir = os.path.join(output_dir, "masks")
-    os.makedirs(masks_dir, exist_ok=True)
-
     with open(scene_json_path) as f:
         scene_cfg = json.load(f)
 
@@ -327,6 +342,17 @@ def preprocess(scene_json_path: str = SCENE_JSON,
     bg_image   = cv2.imread(image_path)
     if bg_image is None:
         raise FileNotFoundError(f"Scene image not found: {image_path}")
+
+    # Derive output_dir from the scene image's basename when not given.
+    # Each scene gets its own subdir under output/processed_scene/ so
+    # processing a new scene doesn't clobber a previous one.
+    if output_dir is None:
+        scene_name = os.path.splitext(os.path.basename(image_path))[0]
+        output_dir = os.path.join(output_base_dir, scene_name)
+        print(f"Output dir auto-derived from scene image: {output_dir}")
+
+    masks_dir = os.path.join(output_dir, "masks")
+    os.makedirs(masks_dir, exist_ok=True)
 
     print(f"\n── Step 1: Depth estimation for {image_path}")
     depth_m = estimate_background_depth(image_path, scene_cfg, output_dir)
@@ -358,7 +384,16 @@ def preprocess(scene_json_path: str = SCENE_JSON,
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--scene-json", default=SCENE_JSON)
-    parser.add_argument("--output-dir", default=OUTPUT_DIR)
+    parser.add_argument("--scene-json", default=SCENE_JSON,
+                        help="Input scene config JSON")
+    parser.add_argument("--output-dir", default=None,
+                        help="Explicit output directory. If omitted, "
+                             "derived from scene image filename: "
+                             "<base>/<image_basename>/")
+    parser.add_argument("--output-base-dir", default=OUTPUT_BASE_DIR,
+                        help="Parent directory for auto-derived output "
+                             "(default: output/processed_scene)")
     args = parser.parse_args()
-    preprocess(args.scene_json, args.output_dir)
+    preprocess(args.scene_json,
+               output_dir=args.output_dir,
+               output_base_dir=args.output_base_dir)

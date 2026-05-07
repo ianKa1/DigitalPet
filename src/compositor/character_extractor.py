@@ -287,6 +287,68 @@ def derive_shared_canvas(per_action_max_bboxes: dict) -> int:
     return max_dim + pad * 2
 
 
+# Action names that typically represent the character "on the ground."
+# When available, the foot offset is derived from these only — the
+# bunny's feet during idle/walking are the natural anchor for trajectory
+# foot_position values. Stationary or extreme poses (sleep, bounce)
+# would skew the offset if included.
+LOCOMOTION_ACTION_NAMES = ("idle", "hop", "walk", "run", "stand")
+
+
+def derive_foot_offset_y(per_action_frames_dirs: dict,
+                         canvas_size: int) -> float:
+    """
+    Compute foot_offset_y_frac by finding the lowest non-white pixel
+    across all locomotion-style actions. The result is the fractional
+    y-position within the canvas where the character's feet land.
+
+    Falls back to the median across all actions if none of the
+    locomotion action names are present (handles pets with custom
+    action vocabularies).
+
+    Args:
+        per_action_frames_dirs: {action_name: Path-to-frames-dir}
+        canvas_size: shared canvas height (= width, since square)
+
+    Returns:
+        foot_offset_y_frac in [0, 1]
+    """
+    # First pass: per-action max foot y across all frames in that action
+    per_action_max_y = {}
+    for action, frames_dir in per_action_frames_dirs.items():
+        max_y = 0
+        for fp in sorted(frames_dir.glob("frame_*.png")):
+            img = cv2.imread(str(fp), cv2.IMREAD_GRAYSCALE)
+            if img is None:
+                continue
+            ys = np.where((img < 240).any(axis=1) if img.ndim > 1
+                          else (img < 240))[0]
+            if len(ys):
+                max_y = max(max_y, int(ys.max()))
+        if max_y > 0:
+            per_action_max_y[action] = max_y
+
+    if not per_action_max_y:
+        return 0.95  # Hard fallback if no foot pixels found anywhere
+
+    # Prefer locomotion actions if any are present
+    locomotion_present = [a for a in LOCOMOTION_ACTION_NAMES
+                          if a in per_action_max_y]
+
+    if locomotion_present:
+        relevant_y_values = [per_action_max_y[a] for a in locomotion_present]
+        chosen_y = int(np.median(relevant_y_values))
+        source = f"locomotion actions ({', '.join(locomotion_present)})"
+    else:
+        all_y_values = list(per_action_max_y.values())
+        chosen_y = int(np.median(all_y_values))
+        source = f"median of all {len(all_y_values)} actions"
+
+    frac = chosen_y / canvas_size
+    print(f"   foot_offset_y_frac = {frac:.3f}  (from {source})")
+    return frac
+
+
 # ──────────────────────────────────────────────
 # CENTERING
 # ──────────────────────────────────────────────
@@ -338,6 +400,7 @@ def extract_pet(animations_dir: str,
                 click_x: int = None,
                 click_y: int = None,
                 per_action_clicks: dict = None,
+                overwrite_character_json: bool = True,
                 sam2_checkpoint: str = SAM2_CHECKPOINT,
                 sam2_model_cfg: str = SAM2_MODEL_CFG):
     """
@@ -354,6 +417,10 @@ def extract_pet(animations_dir: str,
                            that need manual override (e.g. front-facing
                            poses where the auto-click might land on a
                            facial feature).
+        overwrite_character_json: if True (default), overwrite any
+                                  existing character.json next to the
+                                  pet directory. Set False to preserve
+                                  hand-tuned values across re-runs.
         sam2_checkpoint, sam2_model_cfg: SAM2 model weights and config.
 
     Output structure:
@@ -362,6 +429,7 @@ def extract_pet(animations_dir: str,
             <action>/
                 frames/frame_NNNN.png
                 masks/frame_NNNN.png
+        <animations_dir>/../character.json
     """
     # Lazy import — keeps the rest of the package usable without SAM2 deps
     from sam2.build_sam import build_sam2_video_predictor
@@ -485,9 +553,8 @@ def extract_pet(animations_dir: str,
         print(f"   ✅ {action}: {n_frames} frames")
 
     # ── Pass 4: write canvas.json with metadata for the runtime ──
-    # foot_offset_y_frac = 0.95 is a sensible default but the user should
-    # tweak it after eyeballing the output. We record the centering math
-    # we actually used so AnimationLibrary can pick the right offset later.
+    # canvas.json is consumed by AnimationLibrary to pick up canvas size
+    # and per-action frame counts without having to inspect every PNG.
     canvas_meta = {
         "canvas_size":         canvas,
         "padding_frac":        PADDING_FRAC,
@@ -499,23 +566,65 @@ def extract_pet(animations_dir: str,
             }
             for action, data in per_action_data.items()
         },
-        # Defaults — override per-pet in character.json after inspecting frames
-        "default_foot_offset_x_frac": 0.5,
-        "default_foot_offset_y_frac": 0.95,
     }
     canvas_json_path = output_dir / "canvas.json"
     with open(canvas_json_path, "w") as f:
         json.dump(canvas_meta, f, indent=2)
     print(f"\n📋 Wrote canvas metadata: {canvas_json_path}")
 
+    # ── Pass 5: derive and write character.json ──
+    # The character.json is what the compositor reads at runtime. Most
+    # of its fields can be auto-derived from what the extractor just
+    # produced; the only manual-tuning field is physical_thickness_m.
+    per_action_frames_dirs = {
+        action: output_dir / action / "frames"
+        for action in per_action_data.keys()
+    }
+    print(f"\n── Computing foot offset...")
+    foot_y_frac = derive_foot_offset_y(per_action_frames_dirs, canvas)
+
+    actions = sorted(per_action_data.keys())
+    default_action = "idle" if "idle" in actions else actions[0]
+
+    pet_name = animations_dir.parent.name  # output/pets/<name>/animations -> <name>
+
+    character_data = {
+        "character": {
+            "name":                 pet_name,
+            "frames_dir":           str(output_dir),
+            "foot_offset_x_frac":   0.5,
+            "foot_offset_y_frac":   round(foot_y_frac, 3),
+            "physical_thickness_m": 0.5,
+            "default_animation":    default_action,
+        },
+        "animations": {
+            action: {"facing": "right", "looping": True}
+            for action in actions
+        },
+    }
+
+    # character.json lives one level up from extracted/ so it's a peer
+    # of animations/ rather than buried inside it. Convention chosen
+    # so users running `ls output/pets/Fluffball/` see it immediately.
+    character_json_path = animations_dir.parent / "character.json"
+
+    if character_json_path.exists() and not overwrite_character_json:
+        print(f"\n📋 character.json already exists, skipping (use "
+              f"--overwrite-character-json to clobber): {character_json_path}")
+    else:
+        with open(character_json_path, "w") as f:
+            json.dump(character_data, f, indent=2)
+        verb = "Overwrote" if character_json_path.exists() else "Wrote"
+        print(f"\n📋 {verb} character.json: {character_json_path}")
+
     print("\n" + "=" * 60)
     print("Extraction complete.")
     print("=" * 60)
-    print(f"Update your character.json with:")
-    print(f'  "frames_dir":         "{output_dir}"')
-    print(f'  "native_height_px":   {canvas}')
-    print(f'  "foot_offset_x_frac": 0.5')
-    print(f'  "foot_offset_y_frac": 0.95   <- tune after inspecting frames')
+    print(f"Frames        → {output_dir}")
+    print(f"Character     → {character_json_path}")
+    print(f"Canvas size   → {canvas}×{canvas}px")
+    print(f"Foot offset   → y={foot_y_frac:.3f}  "
+          f"(verify by eyeballing a frame; tweak in character.json if needed)")
     return output_dir
 
 
@@ -545,6 +654,14 @@ if __name__ == "__main__":
         help="Per-action click override, repeatable. "
              "e.g. --click curious_look:60,90 --click hop:70,100",
     )
+    parser.add_argument(
+        "--no-overwrite-character-json",
+        action="store_true",
+        help="Skip writing character.json if one already exists at the "
+             "target location. Default: overwrite. Useful when you've "
+             "hand-tuned foot_offset_y_frac or physical_thickness_m and "
+             "want to keep those values across re-runs.",
+    )
     parser.add_argument("--sam2-checkpoint", default=SAM2_CHECKPOINT)
     parser.add_argument("--sam2-config",     default=SAM2_MODEL_CFG)
     args = parser.parse_args()
@@ -565,6 +682,7 @@ if __name__ == "__main__":
         click_x=args.click_x,
         click_y=args.click_y,
         per_action_clicks=per_action_clicks,
+        overwrite_character_json=not args.no_overwrite_character_json,
         sam2_checkpoint=args.sam2_checkpoint,
         sam2_model_cfg=args.sam2_config,
     )
