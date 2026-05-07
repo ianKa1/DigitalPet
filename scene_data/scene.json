@@ -1,0 +1,9 @@
+{
+  "scene": {
+    "image_path": "testing_background/street.png",
+    "reference_points": {
+      "near": { "image_pos": [1300, 1450], "metric_depth_m": 1.5 },
+      "far":  { "image_pos": [1250, 700],  "metric_depth_m": 30.0 }
+    }
+  }
+}
