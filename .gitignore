@@ -26,6 +26,12 @@ wheels/
 .installed.cfg
 *.egg
 
+# Model checkpoints
+checkpoints/
+
+# Video outputs
+*.mp4
+
 # Generated content
 output/*
 !output/pets/

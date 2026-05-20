@@ -1,0 +1,83 @@
+{
+  "canvas_size": 169,
+  "padding_frac": 0.15,
+  "actions": {
+    "bounce": {
+      "frame_count": 6,
+      "source_size": [
+        124,
+        162
+      ],
+      "max_bbox": [
+        88,
+        131
+      ]
+    },
+    "curious_look": {
+      "frame_count": 7,
+      "source_size": [
+        124,
+        124
+      ],
+      "max_bbox": [
+        94,
+        118
+      ]
+    },
+    "float": {
+      "frame_count": 7,
+      "source_size": [
+        124,
+        154
+      ],
+      "max_bbox": [
+        110,
+        103
+      ]
+    },
+    "hop": {
+      "frame_count": 6,
+      "source_size": [
+        124,
+        140
+      ],
+      "max_bbox": [
+        96,
+        107
+      ]
+    },
+    "idle": {
+      "frame_count": 6,
+      "source_size": [
+        124,
+        138
+      ],
+      "max_bbox": [
+        90,
+        107
+      ]
+    },
+    "sleep": {
+      "frame_count": 5,
+      "source_size": [
+        124,
+        148
+      ],
+      "max_bbox": [
+        119,
+        97
+      ]
+    },
+    "wiggle_ears": {
+      "frame_count": 3,
+      "source_size": [
+        124,
+        128
+      ],
+      "max_bbox": [
+        95,
+        116
+      ]
+    }
+  }
+}
