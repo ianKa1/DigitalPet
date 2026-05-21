@@ -43,6 +43,36 @@ OUTPUT_BASE_DIR = "output/processed_scene"
 SAM2_CHECKPOINT = "checkpoints/sam2_hiera_large.pt"
 SAM2_MODEL_CFG  = "sam2_hiera_l.yaml"
 
+# SAM2 automatic mask generator defaults. These are tuned for "good
+# recall on medium objects" — catches keyboards, controllers, and
+# similar mid-sized things that the original (lower-recall) defaults
+# missed. The CLI exposes each as a flag so individual scenes can be
+# retuned without code changes.
+#
+# Knob effects:
+#   points_per_side:           density of click grid; more = catches
+#                              smaller / mid-sized things; cost: O(n^2)
+#   pred_iou_thresh:           SAM2's mask-quality threshold; lower =
+#                              accept lower-quality masks; cost: more noise
+#   stability_score_thresh:    mask stability under perturbation; lower =
+#                              more permissive; cost: more noise
+#   box_nms_thresh:            non-max suppression IoU; higher = keep more
+#                              overlapping candidates (good for catching
+#                              over-segmentation that the labeler will
+#                              merge via IoU clustering)
+#   crop_n_layers:             run SAM2 on sub-crops too; 1 layer ≈ 3-4x
+#                              cost but big improvement for medium objects;
+#                              this is the biggest-impact knob
+#   min_mask_region_area:      drop noise masks below N pixels
+SAM2_DEFAULTS = {
+    "points_per_side":        48,
+    "pred_iou_thresh":        0.75,
+    "stability_score_thresh": 0.88,
+    "box_nms_thresh":         0.70,
+    "crop_n_layers":          1,
+    "min_mask_region_area":   1000,
+}
+
 MAX_SEGMENT_AREA_FRAC = 0.35
 MIN_SEGMENT_AREA_FRAC = 0.005
 
@@ -222,7 +252,8 @@ def segment_scene(scene_cfg: dict,
                   bg_image: np.ndarray,
                   masks_dir: str,
                   sam2_checkpoint: str,
-                  sam2_model_cfg: str) -> list:
+                  sam2_model_cfg: str,
+                  sam2_params: dict = None) -> list:
     """SAM2 automatic mask generation, with area + ground-plane filtering."""
     from sam2.build_sam import build_sam2  # lazy
     from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
@@ -230,15 +261,17 @@ def segment_scene(scene_cfg: dict,
     h, w = bg_image.shape[:2]
     image_area = h * w
 
+    # Merge caller overrides on top of defaults — any subset of keys is
+    # supported, missing ones fall back to SAM2_DEFAULTS.
+    params = dict(SAM2_DEFAULTS)
+    if sam2_params:
+        params.update(sam2_params)
+
     print("Loading SAM2 for automatic scene segmentation...")
+    print(f"  SAM2 params: " +
+          ", ".join(f"{k}={v}" for k, v in params.items()))
     sam2_model = build_sam2(sam2_model_cfg, sam2_checkpoint, device="cuda")
-    mask_generator = SAM2AutomaticMaskGenerator(
-        model=sam2_model,
-        points_per_side=32,
-        pred_iou_thresh=0.80,
-        stability_score_thresh=0.90,
-        box_nms_thresh=0.70,
-    )
+    mask_generator = SAM2AutomaticMaskGenerator(model=sam2_model, **params)
 
     image_rgb = cv2.cvtColor(bg_image, cv2.COLOR_BGR2RGB)
     print("Running SAM2 automatic mask generation...")
@@ -319,7 +352,8 @@ def preprocess(scene_json_path: str = SCENE_JSON,
                output_dir: str = None,
                output_base_dir: str = OUTPUT_BASE_DIR,
                sam2_checkpoint: str = SAM2_CHECKPOINT,
-               sam2_model_cfg: str = SAM2_MODEL_CFG):
+               sam2_model_cfg: str = SAM2_MODEL_CFG,
+               sam2_params: dict = None):
     """
     Run all scene preprocessing steps and write scene_processed.json.
 
@@ -332,6 +366,11 @@ def preprocess(scene_json_path: str = SCENE_JSON,
                         -> output/processed_scene/street/
         output_base_dir: parent directory used when output_dir is None.
         sam2_checkpoint, sam2_model_cfg: SAM2 model paths.
+        sam2_params: dict of SAM2AutomaticMaskGenerator overrides. Any
+                     subset of {points_per_side, pred_iou_thresh,
+                     stability_score_thresh, box_nms_thresh, crop_n_layers,
+                     min_mask_region_area} can be passed; missing keys
+                     fall back to SAM2_DEFAULTS.
 
     Returns the path to the processed scene JSON.
     """
@@ -362,7 +401,8 @@ def preprocess(scene_json_path: str = SCENE_JSON,
 
     print(f"\n── Step 2: Scene segmentation (SAM2 auto mode)")
     objects = segment_scene(scene_cfg, depth_m, bg_image,
-                            masks_dir, sam2_checkpoint, sam2_model_cfg)
+                            masks_dir, sam2_checkpoint, sam2_model_cfg,
+                            sam2_params=sam2_params)
 
     print(f"\n── Step 3: Writing processed scene JSON")
     out_path = os.path.join(output_dir, "scene_processed.json")
@@ -393,7 +433,57 @@ if __name__ == "__main__":
     parser.add_argument("--output-base-dir", default=OUTPUT_BASE_DIR,
                         help="Parent directory for auto-derived output "
                              "(default: output/processed_scene)")
+
+    # SAM2 auto-mask-generator tuning. Each flag overrides the
+    # corresponding entry in SAM2_DEFAULTS. Omit any flag to keep its
+    # default. See SAM2_DEFAULTS comment in this file for what each
+    # knob does and the recall/cost tradeoffs.
+    sam = parser.add_argument_group(
+        "SAM2 tuning",
+        "Override SAM2 automatic mask generator parameters. Higher "
+        "recall settings catch more medium objects (like keyboards) "
+        "at the cost of more candidate masks to filter/label later."
+    )
+    sam.add_argument("--points-per-side", type=int, default=None,
+                     help=f"Click-grid density "
+                          f"(default {SAM2_DEFAULTS['points_per_side']}). "
+                          "Higher = catches smaller things, O(n^2) cost.")
+    sam.add_argument("--pred-iou-thresh", type=float, default=None,
+                     help=f"SAM2 mask-quality threshold "
+                          f"(default {SAM2_DEFAULTS['pred_iou_thresh']}).")
+    sam.add_argument("--stability-score-thresh", type=float, default=None,
+                     help=f"Mask stability threshold "
+                          f"(default {SAM2_DEFAULTS['stability_score_thresh']}).")
+    sam.add_argument("--box-nms-thresh", type=float, default=None,
+                     help=f"Non-max-suppression IoU threshold "
+                          f"(default {SAM2_DEFAULTS['box_nms_thresh']}).")
+    sam.add_argument("--crop-n-layers", type=int, default=None,
+                     help=f"Sub-crop SAM2 passes "
+                          f"(default {SAM2_DEFAULTS['crop_n_layers']}). "
+                          "Biggest recall knob; 1 ≈ 3-4x runtime, "
+                          "2 ≈ 6-8x runtime.")
+    sam.add_argument("--min-mask-region-area", type=int, default=None,
+                     help=f"Minimum mask area in pixels "
+                          f"(default {SAM2_DEFAULTS['min_mask_region_area']}).")
+
     args = parser.parse_args()
+
+    # Build sam2_params from any flags the user actually set; pass None
+    # if none were given so the defaults apply unchanged.
+    sam2_overrides = {}
+    for cli_name, param_name in [
+        ("points_per_side",        "points_per_side"),
+        ("pred_iou_thresh",        "pred_iou_thresh"),
+        ("stability_score_thresh", "stability_score_thresh"),
+        ("box_nms_thresh",         "box_nms_thresh"),
+        ("crop_n_layers",          "crop_n_layers"),
+        ("min_mask_region_area",   "min_mask_region_area"),
+    ]:
+        val = getattr(args, cli_name)
+        if val is not None:
+            sam2_overrides[param_name] = val
+
     preprocess(args.scene_json,
                output_dir=args.output_dir,
-               output_base_dir=args.output_base_dir)
+               output_base_dir=args.output_base_dir,
+               sam2_params=sam2_overrides or None)

@@ -1,0 +1,63 @@
+{
+  "trajectory": {
+    "scene_ref": "output/processed_scene/desk/scene_processed.json",
+    "character_ref": "output/pets/Fluffball/character.json",
+    "fps": 30,
+
+    "_comment_actions": [
+      "Original action -> Fluffball action mapping:",
+      "  walk        -> hop          (locomotion)",
+      "  jump        -> hop          (no dedicated jump action)",
+      "  investigate -> curious_look (head turn / inspection)",
+      "  celebrate   -> bounce       (in-place excited motion)",
+      "  idle        -> idle",
+      "  sleep       -> sleep"
+    ],
+
+    "keypoints": [
+      { "frame": 0,   "foot_position": [50,  850], "facing": "right", "animation": "hop" },
+      { "frame": 10,  "foot_position": [100, 848], "facing": "right", "animation": "hop" },
+      { "frame": 20,  "foot_position": [150, 845], "facing": "right", "animation": "hop" },
+      { "frame": 30,  "foot_position": [200, 842], "facing": "right", "animation": "hop" },
+      { "frame": 40,  "foot_position": [250, 840], "facing": "right", "animation": "hop" },
+      { "frame": 50,  "foot_position": [300, 840], "facing": "right", "animation": "hop" },
+
+      { "frame": 60,  "foot_position": [350, 820], "facing": "right", "animation": "hop" },
+      { "frame": 70,  "foot_position": [400, 780], "facing": "right", "animation": "hop" },
+      { "frame": 80,  "foot_position": [450, 750], "facing": "right", "animation": "hop" },
+      { "frame": 90,  "foot_position": [500, 740], "facing": "right", "animation": "hop" },
+      { "frame": 100, "foot_position": [550, 745], "facing": "right", "animation": "hop" },
+      { "frame": 110, "foot_position": [600, 760], "facing": "right", "animation": "hop" },
+
+      { "frame": 125, "foot_position": [610, 750], "facing": "right", "animation": "curious_look" },
+      { "frame": 140, "foot_position": [620, 745], "facing": "right", "animation": "curious_look" },
+      { "frame": 155, "foot_position": [625, 755], "facing": "right", "animation": "curious_look" },
+      { "frame": 170, "foot_position": [615, 765], "facing": "right", "animation": "curious_look" },
+
+      { "frame": 180, "foot_position": [640, 770], "facing": "right", "animation": "hop" },
+      { "frame": 190, "foot_position": [670, 780], "facing": "right", "animation": "hop" },
+      { "frame": 200, "foot_position": [710, 790], "facing": "right", "animation": "hop" },
+      { "frame": 210, "foot_position": [740, 795], "facing": "right", "animation": "hop" },
+      { "frame": 220, "foot_position": [770, 800], "facing": "right", "animation": "hop" },
+
+      { "frame": 235, "foot_position": [775, 785], "facing": "right", "animation": "bounce" },
+      { "frame": 250, "foot_position": [780, 800], "facing": "right", "animation": "bounce" },
+      { "frame": 265, "foot_position": [785, 785], "facing": "right", "animation": "bounce" },
+      { "frame": 280, "foot_position": [790, 800], "facing": "right", "animation": "bounce" },
+
+      { "frame": 290, "foot_position": [820, 760], "facing": "right", "animation": "hop" },
+      { "frame": 300, "foot_position": [850, 720], "facing": "right", "animation": "hop" },
+      { "frame": 310, "foot_position": [880, 680], "facing": "right", "animation": "hop" },
+      { "frame": 320, "foot_position": [900, 650], "facing": "right", "animation": "hop" },
+      { "frame": 330, "foot_position": [920, 630], "facing": "right", "animation": "hop" },
+
+      { "frame": 345, "foot_position": [925, 628], "facing": "right", "animation": "idle" },
+      { "frame": 360, "foot_position": [930, 630], "facing": "right", "animation": "idle" },
+      { "frame": 375, "foot_position": [925, 632], "facing": "right", "animation": "idle" },
+
+      { "frame": 390, "foot_position": [928, 550], "facing": "right", "animation": "sleep" },
+      { "frame": 405, "foot_position": [935, 480], "facing": "right", "animation": "sleep" },
+      { "frame": 420, "foot_position": [940, 460], "facing": "right", "animation": "sleep" }
+    ]
+  }
+}

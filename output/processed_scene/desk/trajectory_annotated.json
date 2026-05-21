@@ -1,0 +1,70 @@
+{
+  "trajectory": {
+    "scene_ref": "output/processed_scene/desk/scene_processed.json",
+    "character_ref": "output/pets/Fluffball/character.json",
+    "fps": 30,
+
+    "_comment": [
+      "Updated for the post-dedup mask set on desk scene.",
+      "Switched all on_top_of refs to obj_NNN IDs — labels drift",
+      "across Pass 1 / Pass 2 / disambiguation re-runs, IDs don't.",
+      "",
+      "Mask map:",
+      "  obj_004 = white mechanical keyboard (foreground, 0.30m)",
+      "  obj_033 = left mouse  (blue/purple, 0.36m)",
+      "  obj_026 = right mouse (green,        0.35m, wide bbox)",
+      "  obj_007 = patterned tissue box       (0.49m)"
+    ],
+
+    "keypoints": [
+      { "frame": 0,   "foot_position": [150, 1100], "facing": "right", "animation": "hop",
+        "at_depth_m": 0.35 },
+
+      { "frame": 30,  "foot_position": [350, 1080], "facing": "right", "animation": "hop",
+        "at_depth_m": 0.35 },
+
+      { "frame": 60,  "foot_position": [500, 1080], "facing": "right", "animation": "hop",
+        "on_top_of": "obj_004" },
+
+      { "frame": 90,  "foot_position": [600, 1080], "facing": "right", "animation": "idle",
+        "on_top_of": "obj_004" },
+
+      { "frame": 120, "foot_position": [600, 1080], "facing": "right", "animation": "curious_look",
+        "on_top_of": "obj_004" },
+
+      { "frame": 140, "foot_position": [750, 1050], "facing": "right", "animation": "hop",
+        "at_depth_m": 0.36,
+        "on_top_of": "obj_033" },
+
+      { "frame": 180, "foot_position": [950, 1050], "facing": "right", "animation": "hop",
+        "at_depth_m": 0.38,
+        "on_top_of": "obj_033" },
+
+      { "frame": 200, "foot_position": [1080, 1050], "facing": "right", "animation": "idle",
+        "on_top_of": "obj_033" },
+
+      { "frame": 230, "foot_position": [1080, 1050], "facing": "right", "animation": "curious_look",
+        "on_top_of": "obj_033" },
+
+      { "frame": 250, "foot_position": [1180, 1050], "facing": "right", "animation": "hop",
+        "at_depth_m": 0.38,
+        "on_top_of": "obj_026" },
+
+      { "frame": 290, "foot_position": [1300, 1050], "facing": "right", "animation": "hop",
+        "at_depth_m": 0.40,
+        "on_top_of": "obj_026" },
+
+      { "frame": 310, "foot_position": [1350, 1050], "facing": "right", "animation": "bounce",
+        "on_top_of": "obj_026" },
+
+      { "frame": 360, "foot_position": [1500, 900], "facing": "right", "animation": "hop",
+        "on_top_of": "obj_007" },
+
+      { "frame": 400, "foot_position": [1550, 800], "facing": "right", "animation": "idle",
+        "on_top_of": "obj_007" },
+
+      { "frame": 450, "foot_position": [1550, 750], "facing": "right", "animation": "sleep",
+        "on_top_of": "obj_007" }
+    ]
+  }
+}

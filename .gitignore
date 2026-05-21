@@ -33,17 +33,18 @@ checkpoints/
 *.mp4
 
 # Generated content
-output/*
-!output/pets/
-output/pets/*
+# output/*
+# !output/pets/
+# output/pets/*
+output/processed_scene/street
 !output/pets/README.md
 !output/pets/Fluffball/
 !output/pets/Fluffball/**
 generated_pets/
-*.png
-*.gif
-*.jpg
-*.jpeg
+# *.png
+# *.gif
+# *.jpg
+# *.jpeg
 # Track all files in example pet (Fluffball)
 !output/pets/Fluffball/**/*
 !tests/background/park.jpg

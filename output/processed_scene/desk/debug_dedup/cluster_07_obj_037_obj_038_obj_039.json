@@ -1,0 +1,54 @@
+{
+  "cluster_index": 7,
+  "image_file": "cluster_07_obj_037_obj_038_obj_039.png",
+  "n_masks": 3,
+  "input_masks": [
+    {
+      "local_index_1based": 1,
+      "id": "obj_037",
+      "x_min": 1101,
+      "y_min": 409,
+      "x_max": 1545,
+      "y_max": 602,
+      "mask_area_px": 26383
+    },
+    {
+      "local_index_1based": 2,
+      "id": "obj_038",
+      "x_min": 963,
+      "y_min": 410,
+      "x_max": 1385,
+      "y_max": 603,
+      "mask_area_px": 26003
+    },
+    {
+      "local_index_1based": 3,
+      "id": "obj_039",
+      "x_min": 1101,
+      "y_min": 411,
+      "x_max": 1381,
+      "y_max": 602,
+      "mask_area_px": 25926
+    }
+  ],
+  "prompt": "The image is a cropped region of a larger scene.\nInside the crop, 3 candidate masks are highlighted in distinct\ntranslucent colors and labeled with numbers 1 through 3. Everything\nOUTSIDE these masks has been darkened so you can focus on just the\nhighlighted regions.\n\nThe candidate masks were produced by automatic image segmentation and\nthey overlap each other. Your job: figure out how many distinct\nphysical objects these masks cover, and for each object pick the\nsingle mask whose outline best traces just that object.\n\nLook ONLY at the highlighted regions. Do NOT label objects that are\nvisible in the darkened background \u2014 those are not what's being asked\nabout. Each candidate is identified by its NUMBER, not by its color.\n\nReturn ONLY this JSON object, no other text:\n{\n  \"objects\": [\n    {\n      \"member_masks\": <list of mask numbers that segment this object>,\n      \"best_mask\": <single mask number whose outline most cleanly\n                    traces just this object>,\n      \"description\": \"<2-4 word noun phrase for the object>\"\n    },\n    ...\n  ]\n}\n\nGuidance:\n- If all 3 masks are overlapping segmentations of ONE physical\n  object (e.g. multiple attempts at the same keyboard), return ONE\n  entry with all numbers 1..3 in member_masks.\n- If the masks cover multiple distinct objects whose bounding boxes\n  happen to overlap (e.g. two mice side by side), return one entry\n  per object, putting each mask in the object it belongs to.\n- A \"superset\" mask covers multiple objects at once. Include it in\n  member_masks for every object it covers, but do NOT pick it as\n  best_mask \u2014 prefer the per-object masks.\n- best_mask: the mask whose outline most cleanly traces just the\n  object, without including neighbors or excluding parts of the\n  object. If two candidates are similar, prefer the slightly larger\n  one if it's still mostly on-target \u2014 small masks miss the body\n  edges which causes occlusion bugs downstream.\n- description: short noun phrase for human review only.\n- Every mask number from 1 to 3 must appear in member_masks of at\n  least one object. If a mask seems wrong/garbage, still place it\n  with whatever object it most overlaps with.\n",
+  "vlm_raw_response": "```json\n{\n  \"objects\": [\n    {\n      \"member_masks\": [1, 2, 3],\n      \"best_mask\": 3,\n      \"description\": \"display screen\"\n    }\n  ]\n}\n```",
+  "vlm_error": null,
+  "parsed_groups": [
+    {
+      "member_local_indices_1based": [
+        1,
+        2,
+        3
+      ],
+      "member_ids": [
+        "obj_037",
+        "obj_038",
+        "obj_039"
+      ],
+      "best_local_index_1based": 3,
+      "best_id": "obj_039",
+      "description": "display screen"
+    }
+  ]
+}
