@@ -1,0 +1,114 @@
+{
+  "cluster_index": 2,
+  "image_file": "cluster_02_obj_002_obj_011_obj_024_obj_025_obj_031_obj_032.png",
+  "n_masks": 6,
+  "input_masks": [
+    {
+      "local_index_1based": 1,
+      "id": "obj_002",
+      "x_min": 89,
+      "y_min": 0,
+      "x_max": 1270,
+      "y_max": 577,
+      "mask_area_px": 234409
+    },
+    {
+      "local_index_1based": 2,
+      "id": "obj_011",
+      "x_min": 708,
+      "y_min": 0,
+      "x_max": 1271,
+      "y_max": 299,
+      "mask_area_px": 95625
+    },
+    {
+      "local_index_1based": 3,
+      "id": "obj_024",
+      "x_min": 104,
+      "y_min": 0,
+      "x_max": 384,
+      "y_max": 377,
+      "mask_area_px": 44111
+    },
+    {
+      "local_index_1based": 4,
+      "id": "obj_025",
+      "x_min": 374,
+      "y_min": 0,
+      "x_max": 880,
+      "y_max": 132,
+      "mask_area_px": 43139
+    },
+    {
+      "local_index_1based": 5,
+      "id": "obj_031",
+      "x_min": 115,
+      "y_min": 0,
+      "x_max": 384,
+      "y_max": 175,
+      "mask_area_px": 34048
+    },
+    {
+      "local_index_1based": 6,
+      "id": "obj_032",
+      "x_min": 386,
+      "y_min": 45,
+      "x_max": 879,
+      "y_max": 158,
+      "mask_area_px": 33918
+    }
+  ],
+  "prompt": "The image is a cropped region of a larger scene.\nInside the crop, 6 candidate masks are highlighted in distinct\ntranslucent colors and labeled with numbers 1 through 6. Everything\nOUTSIDE these masks has been darkened so you can focus on just the\nhighlighted regions.\n\nThe candidate masks were produced by automatic image segmentation and\nthey overlap each other. Your job: figure out how many distinct\nphysical objects these masks cover, and for each object pick the\nsingle mask whose outline best traces just that object.\n\nLook ONLY at the highlighted regions. Do NOT label objects that are\nvisible in the darkened background \u2014 those are not what's being asked\nabout. Each candidate is identified by its NUMBER, not by its color.\n\nReturn ONLY this JSON object, no other text:\n{\n  \"objects\": [\n    {\n      \"member_masks\": <list of mask numbers that segment this object>,\n      \"best_mask\": <single mask number whose outline most cleanly\n                    traces just this object>,\n      \"description\": \"<2-4 word noun phrase for the object>\"\n    },\n    ...\n  ]\n}\n\nGuidance:\n- If all 6 masks are overlapping segmentations of ONE physical\n  object (e.g. multiple attempts at the same keyboard), return ONE\n  entry with all numbers 1..6 in member_masks.\n- If the masks cover multiple distinct objects whose bounding boxes\n  happen to overlap (e.g. two mice side by side), return one entry\n  per object, putting each mask in the object it belongs to.\n- A \"superset\" mask covers multiple objects at once. Include it in\n  member_masks for every object it covers, but do NOT pick it as\n  best_mask \u2014 prefer the per-object masks.\n- best_mask: the mask whose outline most cleanly traces just the\n  object, without including neighbors or excluding parts of the\n  object. If two candidates are similar, prefer the slightly larger\n  one if it's still mostly on-target \u2014 small masks miss the body\n  edges which causes occlusion bugs downstream.\n- description: short noun phrase for human review only.\n- Every mask number from 1 to 6 must appear in member_masks of at\n  least one object. If a mask seems wrong/garbage, still place it\n  with whatever object it most overlaps with.\n",
+  "vlm_raw_response": "```json\n{\n  \"objects\": [\n    {\n      \"member_masks\": [3, 5],\n      \"best_mask\": 3,\n      \"description\": \"Left screen content\"\n    },\n    {\n      \"member_masks\": [2],\n      \"best_mask\": 2,\n      \"description\": \"Right screen content\"\n    },\n    {\n      \"member_masks\": [4],\n      \"best_mask\": 4,\n      \"description\": \"Upper desk surface\"\n    },\n    {\n      \"member_masks\": [1, 6],\n      \"best_mask\": 1,\n      \"description\": \"Lower desk surface\"\n    }\n  ]\n}\n```",
+  "vlm_error": null,
+  "parsed_groups": [
+    {
+      "member_local_indices_1based": [
+        3,
+        5
+      ],
+      "member_ids": [
+        "obj_024",
+        "obj_031"
+      ],
+      "best_local_index_1based": 3,
+      "best_id": "obj_024",
+      "description": "Left screen content"
+    },
+    {
+      "member_local_indices_1based": [
+        2
+      ],
+      "member_ids": [
+        "obj_011"
+      ],
+      "best_local_index_1based": 2,
+      "best_id": "obj_011",
+      "description": "Right screen content"
+    },
+    {
+      "member_local_indices_1based": [
+        4
+      ],
+      "member_ids": [
+        "obj_025"
+      ],
+      "best_local_index_1based": 4,
+      "best_id": "obj_025",
+      "description": "Upper desk surface"
+    },
+    {
+      "member_local_indices_1based": [
+        1,
+        6
+      ],
+      "member_ids": [
+        "obj_002",
+        "obj_032"
+      ],
+      "best_local_index_1based": 1,
+      "best_id": "obj_002",
+      "description": "Lower desk surface"
+    }
+  ]
+}

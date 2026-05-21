@@ -40,10 +40,23 @@ BEHIND   = 1
 class ObjectOcclusionState:
     """One state machine per scene object, per character."""
 
-    def __init__(self, obj: dict):
-        self.obj             = obj
-        self.state           = IN_FRONT
-        self.is_intersecting = False
+    def __init__(self, obj: dict, depth_tolerance_m: float = 0.0):
+        """
+        Args:
+            obj: scene object dict with 'mask' and 'base_depth_m'.
+            depth_tolerance_m: minimum depth difference required for the
+                character to be considered "behind" an object. The
+                character is BEHIND only if foot_depth > base_depth +
+                depth_tolerance_m. Acts as a slop margin to absorb
+                calibration noise from monocular depth estimation,
+                especially in close-range scenes where multiple objects
+                live within a few cm of each other (desks, tables).
+                Defaults to 0 (strict ordering, original behaviour).
+        """
+        self.obj                = obj
+        self.depth_tolerance_m  = depth_tolerance_m
+        self.state              = IN_FRONT
+        self.is_intersecting    = False
 
     def _bbox_intersects_mask(self, char_bbox: tuple) -> bool:
         ax1, ay1, ax2, ay2 = char_bbox
@@ -59,25 +72,43 @@ class ObjectOcclusionState:
         """
         Make one front/behind decision via majority vote across the
         lookahead window — robust to single-frame depth noise.
+
+        The character counts as BEHIND only if its foot depth is
+        meaningfully greater than the object's base depth, i.e. by at
+        least depth_tolerance_m. Within the tolerance band, the
+        character is treated as IN_FRONT — better to render the
+        character on top of an ambiguous object than to disappear
+        behind it.
         """
-        base_depth = self.obj['base_depth_m']
+        threshold = self.obj['base_depth_m'] + self.depth_tolerance_m
         all_depths = [foot_depth_m] + list(future_depths)
-        behind_count = sum(1 for d in all_depths if d > base_depth)
+        behind_count = sum(1 for d in all_depths if d > threshold)
         return BEHIND if behind_count * 2 > len(all_depths) else IN_FRONT
 
     def update(self, foot_x: int, foot_y: int,
                foot_depth_m: float, future_feet: list,
-               char_bbox: tuple) -> bool:
+               char_bbox: tuple, forced_state: int = None) -> bool:
         """
         Intersection-based state transition:
           not intersecting → not intersecting: hold IN_FRONT
           not intersecting → intersecting:     decide once based on depth
           intersecting     → intersecting:     hold current state
           intersecting     → not intersecting: reset to IN_FRONT
+
+        If `forced_state` is provided (IN_FRONT or BEHIND), it overrides
+        the depth-comparison logic entirely. This is used for semantic
+        trajectory annotations: when the trajectory says `on_top_of:
+        obj_X`, the character must remain IN_FRONT of obj_X regardless
+        of how the sampled depth values compare. The depth heuristics
+        can't tell whether the character has climbed up an object (depth
+        deeper than base) or fallen behind it (depth deeper than base) —
+        the trajectory annotation resolves the ambiguity.
         """
         intersecting = self._bbox_intersects_mask(char_bbox)
 
-        if intersecting and not self.is_intersecting:
+        if forced_state is not None:
+            self.state = forced_state
+        elif intersecting and not self.is_intersecting:
             future_depths = [fd[2] for fd in future_feet if len(fd) > 2]
             self.state = self._decide_state(foot_depth_m, future_depths)
         elif not intersecting and self.is_intersecting:
