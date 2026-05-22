@@ -1,0 +1,230 @@
+[
+  {
+    "action": "walk",
+    "target_object": "keyboard",
+    "path": [
+      [
+        50,
+        850
+      ],
+      [
+        100,
+        848
+      ],
+      [
+        150,
+        845
+      ],
+      [
+        200,
+        842
+      ],
+      [
+        250,
+        840
+      ],
+      [
+        300,
+        840
+      ]
+    ],
+    "description": "Character walks from the far left of the desk across the bottom edge of the mechanical keyboard."
+  },
+  {
+    "action": "jump",
+    "target_object": "left_mouse",
+    "path": [
+      [
+        300,
+        840
+      ],
+      [
+        350,
+        820
+      ],
+      [
+        400,
+        780
+      ],
+      [
+        450,
+        750
+      ],
+      [
+        500,
+        740
+      ],
+      [
+        550,
+        745
+      ],
+      [
+        600,
+        760
+      ]
+    ],
+    "description": "Character jumps from the keyboard area over the gap onto the back of the first Logitech mouse."
+  },
+  {
+    "action": "investigate",
+    "target_object": "left_mouse_scroll_wheel",
+    "path": [
+      [
+        600,
+        760
+      ],
+      [
+        610,
+        750
+      ],
+      [
+        620,
+        745
+      ],
+      [
+        625,
+        755
+      ],
+      [
+        615,
+        765
+      ]
+    ],
+    "description": "Character leans forward to inspect the illuminated blue logo and scroll wheel on the first mouse."
+  },
+  {
+    "action": "walk",
+    "target_object": "right_mouse",
+    "path": [
+      [
+        615,
+        765
+      ],
+      [
+        640,
+        770
+      ],
+      [
+        670,
+        780
+      ],
+      [
+        710,
+        790
+      ],
+      [
+        740,
+        795
+      ],
+      [
+        770,
+        800
+      ]
+    ],
+    "description": "Character walks across the gap from the first mouse to the second mouse with the green 'G' logo."
+  },
+  {
+    "action": "celebrate",
+    "target_object": "right_mouse",
+    "path": [
+      [
+        770,
+        800
+      ],
+      [
+        775,
+        785
+      ],
+      [
+        780,
+        800
+      ],
+      [
+        785,
+        785
+      ],
+      [
+        790,
+        800
+      ]
+    ],
+    "description": "Character does a small victory dance on top of the second mouse for successfully crossing the desk."
+  },
+  {
+    "action": "jump",
+    "target_object": "tissue_box",
+    "path": [
+      [
+        790,
+        800
+      ],
+      [
+        820,
+        760
+      ],
+      [
+        850,
+        720
+      ],
+      [
+        880,
+        680
+      ],
+      [
+        900,
+        650
+      ],
+      [
+        920,
+        630
+      ]
+    ],
+    "description": "Character performs a high jump from the mouse up onto the colorful tissue box."
+  },
+  {
+    "action": "idle",
+    "target_object": "tissue_box_top",
+    "path": [
+      [
+        920,
+        630
+      ],
+      [
+        925,
+        628
+      ],
+      [
+        930,
+        630
+      ],
+      [
+        925,
+        632
+      ]
+    ],
+    "description": "Character stands still on top of the tissue box, looking out at the city view through the window."
+  },
+  {
+    "action": "sleep",
+    "target_object": "tissue_paper",
+    "path": [
+      [
+        925,
+        632
+      ],
+      [
+        928,
+        550
+      ],
+      [
+        935,
+        480
+      ],
+      [
+        940,
+        460
+      ]
+    ],
+    "description": "Character climbs up individual tissue paper and settles down at the peak for a nap. Starts at [925, 632]."
+  }
+]

@@ -231,7 +231,7 @@ def segment_scene(scene_cfg: dict,
     image_area = h * w
 
     print("Loading SAM2 for automatic scene segmentation...")
-    sam2_model = build_sam2(sam2_model_cfg, sam2_checkpoint, device="cuda")
+    sam2_model = build_sam2(sam2_model_cfg, sam2_checkpoint, device="mps")
     mask_generator = SAM2AutomaticMaskGenerator(
         model=sam2_model,
         points_per_side=32,

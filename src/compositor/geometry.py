@@ -24,11 +24,15 @@ def load_trajectory(trajectory_json_path: str) -> dict:
 
 def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
     """
-    Given sparse keypoints [{frame, foot_position, facing, animation}, ...],
+    Given sparse keypoints [{frame, foot_position, facing, animation, depth_m?}, ...],
     return a per-frame list of dicts with all fields interpolated or
     carried forward as appropriate.
 
     - foot_position: linearly interpolated
+    - depth_m:       linearly interpolated when both surrounding keypoints
+                     have it; held from the previous keypoint when only one
+                     does; None when neither does (compositor falls back to
+                     depth-map sampling for those frames)
     - facing / animation: held from last keypoint (step function)
     """
     if not keypoints:
@@ -48,6 +52,7 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
             kp = kps[0]
             frames.append({
                 "foot_position": tuple(kp["foot_position"]),
+                "depth_m":       kp.get("depth_m"),
                 "facing":        kp.get("facing", "right"),
                 "animation":     kp.get("animation", "walk"),
             })
@@ -58,6 +63,7 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
             kp = kps[-1]
             frames.append({
                 "foot_position": tuple(kp["foot_position"]),
+                "depth_m":       kp.get("depth_m"),
                 "facing":        kp.get("facing", "right"),
                 "animation":     kp.get("animation", "idle"),
             })
@@ -70,8 +76,23 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
         x = int(k0["foot_position"][0] + t * (k1["foot_position"][0] - k0["foot_position"][0]))
         y = int(k0["foot_position"][1] + t * (k1["foot_position"][1] - k0["foot_position"][1]))
 
+        d0 = k0.get("depth_m")
+        d1 = k1.get("depth_m")
+        if d0 is not None and d1 is not None:
+            depth_m = d0 + t * (d1 - d0)   # smooth linear interpolation
+        elif d0 is not None:
+            depth_m = d0                    # hold — no target yet
+        elif d1 is not None:
+            depth_m = d1                    # hold forward — approaching explicit region.
+                                            # Prevents a depth jump at the boundary frame
+                                            # where the compositor would otherwise switch
+                                            # from a sampled value to the explicit d1.
+        else:
+            depth_m = None                  # both sides unset — compositor samples
+
         frames.append({
             "foot_position": (x, y),
+            "depth_m":       depth_m,
             "facing":        k0.get("facing", "right"),
             "animation":     k0.get("animation", "walk"),
         })

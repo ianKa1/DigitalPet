@@ -1,0 +1,9 @@
+{
+  "scene": {
+    "image_path": "/Users/erica/Desktop/CinTV/DigitalPet/scene_input/desk.jpg",
+    "reference_points": {
+      "near": { "image_pos": [700, 1000], "metric_depth_m": 0.4 },
+      "far":  { "image_pos": [1100, 250], "metric_depth_m": 1.2 }
+    }
+  }
+}

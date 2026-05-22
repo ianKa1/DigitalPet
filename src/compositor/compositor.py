@@ -85,32 +85,54 @@ def _build_depth_trajectory(scene: SceneContext,
                             frame_data: list,
                             total_frames: int) -> list:
     """
-    Per-frame ground depth at the foot, with object-intersection episodes
-    linearly interpolated from pre-entry to post-exit. This prevents an
-    object's own shallow pixels from corrupting the character's scale
-    when the character bbox overlaps the object.
+    Per-frame ground depth at the foot.
+
+    For frames whose interpolated trajectory already carries an explicit
+    depth_m (set in the trajectory JSON), that value is used directly and
+    the frame is skipped by the intersection-smoothing pass — the user
+    has provided the authoritative answer, so we don't second-guess it.
+
+    For frames without explicit depth_m, the depth is sampled from the
+    scene depth map (median of a patch around the foot, excluding object
+    pixels). Runs of those sampled frames that fall inside an object mask
+    are then linearly interpolated between the pre-entry and post-exit
+    values to prevent the object's shallow surface from corrupting the
+    character's scale mid-overlap.
     """
     print("\n── Pre-computing foot depth trajectory...")
 
-    ground_depths = []
+    ground_depths    = []
+    is_explicit      = []
     intersecting_any = []
+
     for fd in frame_data:
         fx, fy = fd["foot_position"]
-        d = _sample_ground_depth(scene, fx, fy)
+
+        explicit = fd.get("depth_m") is not None
+        d = float(fd["depth_m"]) if explicit else _sample_ground_depth(scene, fx, fy)
 
         fxc = min(max(fx, 0), scene.w - 1)
         fyc = min(max(fy, 0), scene.h - 1)
         in_any = any(obj["mask"][fyc, fxc] > 128 for obj in scene.objects)
 
         ground_depths.append(d)
+        is_explicit.append(explicit)
         intersecting_any.append(in_any)
 
+    n_explicit = sum(is_explicit)
+    n_sampled  = total_frames - n_explicit
+    print(f"  {n_explicit} frames use explicit depth_m from trajectory, "
+          f"{n_sampled} sampled from depth map")
+
+    # Intersection smoothing — only for non-explicit frames
     frame_depths = list(ground_depths)
     i_ep = 0
     while i_ep < total_frames:
-        if intersecting_any[i_ep]:
+        if intersecting_any[i_ep] and not is_explicit[i_ep]:
             start = i_ep
-            while i_ep < total_frames and intersecting_any[i_ep]:
+            while (i_ep < total_frames
+                   and intersecting_any[i_ep]
+                   and not is_explicit[i_ep]):
                 i_ep += 1
             end = i_ep
 
@@ -126,7 +148,7 @@ def _build_depth_trajectory(scene: SceneContext,
         else:
             i_ep += 1
 
-    print(f"  Computed depth trajectory for {total_frames} frames")
+    print(f"  Depth trajectory ready for {total_frames} frames")
     return frame_depths
 
 
@@ -186,11 +208,8 @@ def composite(
     out    = cv2.VideoWriter(output_video, fourcc, fps, (scene.w, scene.h))
 
     print(f"\n── Compositing {total_frames} frames → {output_video}")
-    print(f"{'Frm':<5} | {'Anim':<10} | {'Foot XY':<14} | {'Depth':>7} | "
-          f"{'Scale':>6} | Occluders")
-    print("-" * 75)
-
-    LOOKAHEAD = 6
+    print(f"{'Frm':<5} | {'Anim':<10} | {'Foot XY':<14} | {'Depth':>7} | {'Scale':>6}")
+    print("-" * 55)
 
     for i, fdata in enumerate(frame_data):
         action = fdata.get("animation", char.default_animation)
@@ -255,24 +274,25 @@ def composite(
 
         # ── Future foot positions/depths for occlusion lookahead ──
         future_feet = []
-        for k in range(1, LOOKAHEAD + 1):
+        for k in range(1, 7):
             fdata_k = frame_data[min(i + k, total_frames - 1)]
             fx, fy  = fdata_k["foot_position"]
             fxc     = min(max(fx, 0), scene.w - 1)
             fyc     = min(max(fy, 0), scene.h - 1)
-            fd      = float(scene.depth_m[fyc, fxc])
-            future_feet.append((fx, fy, fd))
+            future_feet.append((fx, fy, float(scene.depth_m[fyc, fxc])))
 
         # ── Update occlusion state machines ──
+        # Passes scene.depth_m so each object samples overlap-region depth
+        # at decision time rather than using its pre-computed ground anchor.
         for obj in scene.objects:
             state  = occlusion_states[obj["id"]]
             before = state.state
-            state.update(foot_x, foot_y, foot_depth_m, future_feet, bbox)
+            state.update(foot_x, foot_y, foot_depth_m, future_feet, bbox,
+                         depth_m=scene.depth_m)
             after  = state.state
             if before != after:
                 label = {IN_FRONT: "IN_FRONT", BEHIND: "BEHIND"}
-                print(f"  [{obj['id']}] intersect={state.is_intersecting}  "
-                      f"{label[before]} -> {label[after]}")
+                print(f"  [{obj['id']}] {label[before]} → {label[after]}")
 
         # ── Occlusion alpha ──
         occlude_alpha = compute_occlusion_alpha(
@@ -283,7 +303,6 @@ def composite(
 
         active_objs = [obj["id"] for obj in scene.objects
                        if occlusion_states[obj["id"]].state == BEHIND]
-
         print(f"{i:<5} | {action:<10} | ({foot_x:<5},{foot_y:<5}) | "
               f"{foot_depth_m:>6.2f}m | {scale:>5.3f} | "
               f"{active_objs if active_objs else '-'}")
