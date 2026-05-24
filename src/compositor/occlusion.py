@@ -88,7 +88,7 @@ class ObjectOcclusionState:
         depth_roi = depth_m[ay1:ay2, ax1:ax2]
         overlap   = mask_roi > 128
 
-        if overlap.sum() < 10:          # too few pixels — fall back to anchor
+        if overlap.sum() < 4:          # too few pixels — fall back to anchor
             return self.obj['base_depth_m']
 
         return float(np.median(depth_roi[overlap]))

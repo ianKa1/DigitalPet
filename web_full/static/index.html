@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DigitalPet Trajectory Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ── Header ──────────────────────────────────────────── -->
+    <header>
+      <h1>DigitalPet Trajectory Editor</h1>
+      <div id="status" class="status-loading">Connecting to server…</div>
+    </header>
+
+    <!-- ── Toolbar ─────────────────────────────────────────── -->
+    <div id="toolbar">
+      <div class="toolbar-group">
+        <button id="btn-generate" disabled>Auto-Generate Path</button>
+        <button id="btn-optimize" disabled>Run Optimizer</button>
+        <button id="btn-play"     disabled>▶ Play Preview</button>
+        <button id="btn-stop"     disabled style="display:none">■ Stop</button>
+        <button id="btn-clear"    disabled>Clear</button>
+      </div>
+
+      <div class="toolbar-group">
+        <label>Path style
+          <select id="path-style">
+            <option value="sweep">sweep</option>
+            <option value="return">return</option>
+            <option value="wander">wander</option>
+          </select>
+        </label>
+        <label>Keypoints
+          <input id="n-keypoints" type="number" value="10" min="2" max="40">
+        </label>
+        <label>Spacing (fr)
+          <input id="frame-spacing" type="number" value="20" min="5" max="120">
+        </label>
+      </div>
+
+      <div class="toolbar-group">
+        <label>Optimizer strategy
+          <select id="opt-strategy">
+            <option value="auto">auto</option>
+            <option value="front">front</option>
+            <option value="behind">behind</option>
+            <option value="ontop">ontop</option>
+            <option value="around">around</option>
+          </select>
+        </label>
+        <label>Depth margin
+          <input id="depth-margin" type="number" value="0.04" min="0.01" max="0.5" step="0.01">
+        </label>
+        <label>Around margin (px)
+          <input id="around-margin" type="number" value="30" min="5" max="100">
+        </label>
+      </div>
+
+      <div class="toolbar-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="show-depth"> Depth overlay
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="show-floor" checked> Floor overlay
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="show-bboxes" checked> Object boxes
+        </label>
+      </div>
+    </div>
+
+    <!-- ── View tabs ───────────────────────────────────────── -->
+    <div id="view-tabs">
+      <button class="tab active" data-view="depth"      id="tab-depth"      disabled>Depth</button>
+      <button class="tab"        data-view="trajectory" id="tab-trajectory" disabled>Trajectory</button>
+      <button class="tab"        data-view="compare"    id="tab-compare"    disabled>Compare</button>
+      <button class="tab"        data-view="composite"  id="tab-composite"  disabled>Composite</button>
+      <button class="tab"        data-view="preview"    id="tab-preview"    disabled>Preview</button>
+      <div class="tab-spacer"></div>
+      <button id="btn-save-step" disabled>Save View</button>
+      <button id="btn-save"      disabled>Save All</button>
+    </div>
+
+    <!-- ── Main area: center + sidebar ─────────────────────── -->
+    <div id="main-area">
+
+      <div id="center">
+
+        <!-- depth / trajectory / preview: shared editor canvas -->
+        <div id="canvas-wrap">
+          <canvas id="editor-canvas"></canvas>
+        </div>
+
+        <!-- compare: side-by-side trajectory visualizations -->
+        <div id="comparison" style="display:none">
+          <div class="compare-panel">
+            <div class="compare-header">
+              <h3>Auto-generated</h3>
+              <button class="btn-save-panel" data-which="auto">Save PNG</button>
+            </div>
+            <canvas id="auto-canvas"></canvas>
+          </div>
+          <div class="compare-panel">
+            <div class="compare-header">
+              <h3>Optimized</h3>
+              <button class="btn-save-panel" data-which="opt">Save PNG</button>
+            </div>
+            <canvas id="opt-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- composite: video compositor controls + result -->
+        <div id="composite-panel" style="display:none">
+          <div id="composite-cfg">
+            <h2>Compositor Settings</h2>
+
+            <label>Trajectory
+              <select id="composite-which">
+                <option value="optimized">Optimized (if available)</option>
+                <option value="auto">Auto-generated</option>
+              </select>
+            </label>
+            <label>Global scale
+              <input id="global-scale" type="number" value="1.0" step="0.1" min="0.1" max="5.0">
+            </label>
+            <label>Depth tolerance (m)
+              <input id="depth-tolerance" type="number" value="0.0" step="0.05" min="0.0" max="0.5">
+            </label>
+
+            <button id="btn-composite" disabled>▶ Run Compositor</button>
+          </div>
+
+          <div id="composite-result">
+            <p id="composite-msg">Run the compositor to generate the video.</p>
+            <div id="composite-download" style="display:none">
+              <a id="download-video" href="" class="download-btn">⬇ Download MP4</a>
+              <span id="composite-elapsed"></span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- #center -->
+
+      <div id="sidebar">
+        <div class="sidebar-section">
+          <h3>Hint</h3>
+          <p class="hint">Click on canvas to drag existing waypoints. After generating, use Run Optimizer to resolve object crossings, then Composite to render the video.</p>
+        </div>
+
+        <div class="sidebar-section">
+          <h3>Keypoints <span id="kp-count">(0)</span></h3>
+          <div id="keypoint-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- #app -->
+
+  <script src="canvas_viz.js"></script>
+  <script src="canvas_editor.js"></script>
+  <script src="preview.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
