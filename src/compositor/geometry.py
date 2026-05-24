@@ -25,14 +25,14 @@ def load_trajectory(trajectory_json_path: str) -> dict:
 def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
     """
     Given sparse keypoints [{frame, foot_position, facing, animation,
-    at_depth_m?, on_top_of?}, ...], return a per-frame list of dicts
+    depth_m?, on_top_of?}, ...], return a per-frame list of dicts
     with all fields interpolated or carried forward as appropriate.
 
     Interpolation behavior:
       - foot_position: linearly interpolated between surrounding keypoints
       - facing / animation: step function — held from the most recent
         keypoint until the next change
-      - at_depth_m: linearly interpolated between two surrounding keypoints
+      - depth_m: linearly interpolated between two surrounding keypoints
         ONLY IF BOTH have a value. If either neighbour is unannotated,
         the value is None (compositor falls back to depth-map sampling).
         This is deliberately stricter than the step-function fields:
@@ -44,12 +44,12 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
         semantic meaning ("character is currently on this object") naturally
         persists across frames.
 
-    Subtlety: `at_depth_m` and `on_top_of` are *independent* annotation
-    paths. They don't blend. If keypoint K0 has `at_depth_m: 1.0` and K1
+    Subtlety: `depth_m` and `on_top_of` are *independent* annotation
+    paths. They don't blend. If keypoint K0 has `depth_m: 1.0` and K1
     has `on_top_of: obj_X`, the segment between them has neither
     annotation (no smooth depth transition) and the compositor uses the
     legacy depth-map sampling. To get a smooth transition, give both
-    keypoints `at_depth_m` values explicitly.
+    keypoints `depth_m` values explicitly.
     """
     if not keypoints:
         raise ValueError("Trajectory has no keypoints.")
@@ -62,14 +62,14 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
 
     def interp_depth(k0, k1, t):
         """
-        Linear interp of at_depth_m, but only across segments where both
+        Linear interp of depth_m, but only across segments where both
         endpoints are annotated. At exact keypoint frames (t=0 or t=1)
         we return the endpoint's own value if it has one, even if the
         other endpoint doesn't — annotated keypoints always express their
         author's intent at that frame.
         """
-        d0 = k0.get("at_depth_m")
-        d1 = k1.get("at_depth_m")
+        d0 = k0.get("depth_m")
+        d1 = k1.get("depth_m")
         if t == 0:
             return None if d0 is None else float(d0)
         if t == 1:
@@ -89,7 +89,7 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
                 "foot_position": tuple(kp["foot_position"]),
                 "facing":        step_field(kp, "facing", "right"),
                 "animation":     step_field(kp, "animation", "walk"),
-                "at_depth_m":    kp.get("at_depth_m"),
+                "depth_m":       kp.get("depth_m"),
                 "on_top_of":     step_field(kp, "on_top_of"),
             })
             continue
@@ -100,7 +100,7 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
                 "foot_position": tuple(kp["foot_position"]),
                 "facing":        step_field(kp, "facing", "right"),
                 "animation":     step_field(kp, "animation", "idle"),
-                "at_depth_m":    kp.get("at_depth_m"),
+                "depth_m":       kp.get("depth_m"),
                 "on_top_of":     step_field(kp, "on_top_of"),
             })
             continue
@@ -116,7 +116,7 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
             "foot_position": (x, y),
             "facing":        step_field(k0, "facing", "right"),
             "animation":     step_field(k0, "animation", "walk"),
-            "at_depth_m":    interp_depth(k0, k1, t),
+            "depth_m":       interp_depth(k0, k1, t),
             "on_top_of":     step_field(k0, "on_top_of"),
         })
 

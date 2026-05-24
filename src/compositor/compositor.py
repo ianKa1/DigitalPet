@@ -145,7 +145,7 @@ def _resolve_foot_state(scene: SceneContext, fdata: dict) -> tuple:
          the character. The list expresses this naturally.
 
     The two annotations compose because they answer different questions:
-      - `at_depth_m`  answers "where is the character" (depth/scale)
+      - `depth_m`  answers "where is the character" (depth/scale)
       - `on_top_of`   answers "what is the character locked onto"
                       (occlusion override against these objects)
 
@@ -154,7 +154,7 @@ def _resolve_foot_state(scene: SceneContext, fdata: dict) -> tuple:
          IN_FRONT. Depth is sampled from the FIRST referenced object's
          mask (the others are duplicates/stack-mates, not the surface
          the foot is touching).
-      2. If `at_depth_m` is also present, it overrides any depth derived
+      2. If `depth_m` is also present, it overrides any depth derived
          from on_top_of.
       3. If neither is present, return (None, {}).
     """
@@ -194,10 +194,10 @@ def _resolve_foot_state(scene: SceneContext, fdata: dict) -> tuple:
             fx, fy = fdata["foot_position"]
             depth = _sample_depth_inside_mask(scene, primary_obj, fx, fy)
 
-    # at_depth_m always wins for depth if specified; on_top_of's forced
+    # depth_m always wins for depth if specified; on_top_of's forced
     # states still apply.
-    if fdata.get("at_depth_m") is not None:
-        depth = float(fdata["at_depth_m"])
+    if fdata.get("depth_m") is not None:
+        depth = float(fdata["depth_m"])
 
     return depth, forced
 
@@ -357,8 +357,8 @@ def _bbox_intersects_any_target(fdata_probe: dict,
     """
     # Determine the depth at the target frame to compute scale
     target_depth = None
-    if fdata_target.get("at_depth_m") is not None:
-        target_depth = float(fdata_target["at_depth_m"])
+    if fdata_target.get("depth_m") is not None:
+        target_depth = float(fdata_target["depth_m"])
     else:
         # Sample inside the first valid target object's mask.
         # A ref can expand to multiple objects (via label match); pick
@@ -412,7 +412,7 @@ def _build_depth_trajectory(scene: SceneContext,
                             total_frames: int) -> list:
     """
     Per-frame foot depth, resolved with this priority:
-      1. Frame's explicit `at_depth_m` (linear-interpolated by the
+      1. Frame's explicit `depth_m` (linear-interpolated by the
          trajectory loader between annotated keypoints).
       2. Frame's `on_top_of` — sample the depth map inside that object's
          mask near the foot.
@@ -659,7 +659,7 @@ def composite(
             before = state.state
             forced = forced_states.get(obj["id"])
             state.update(foot_x, foot_y, foot_depth_m, future_feet, bbox,
-                         forced_state=forced)
+                         depth_m=scene.depth_m, forced_state=forced)
             after  = state.state
             if before != after:
                 label = {IN_FRONT: "IN_FRONT", BEHIND: "BEHIND"}
