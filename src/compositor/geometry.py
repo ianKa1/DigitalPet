@@ -24,48 +24,84 @@ def load_trajectory(trajectory_json_path: str) -> dict:
 
 def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
     """
-    Given sparse keypoints [{frame, foot_position, facing, animation, depth_m?}, ...],
-    return a per-frame list of dicts with all fields interpolated or
-    carried forward as appropriate.
+    Given sparse keypoints [{frame, foot_position, facing, animation,
+    at_depth_m?, on_top_of?}, ...], return a per-frame list of dicts
+    with all fields interpolated or carried forward as appropriate.
 
-    - foot_position: linearly interpolated
-    - depth_m:       linearly interpolated when both surrounding keypoints
-                     have it; held from the previous keypoint when only one
-                     does; None when neither does (compositor falls back to
-                     depth-map sampling for those frames)
-    - facing / animation: held from last keypoint (step function)
+    Interpolation behavior:
+      - foot_position: linearly interpolated between surrounding keypoints
+      - facing / animation: step function — held from the most recent
+        keypoint until the next change
+      - at_depth_m: linearly interpolated between two surrounding keypoints
+        ONLY IF BOTH have a value. If either neighbour is unannotated,
+        the value is None (compositor falls back to depth-map sampling).
+        This is deliberately stricter than the step-function fields:
+        depth overrides are explicit semantic intent, not implicit
+        propagation, so they don't carry forward past an unannotated
+        keypoint.
+      - on_top_of: step function — held until cleared with `on_top_of: null`
+        or replaced. Same propagation rules as `animation` because the
+        semantic meaning ("character is currently on this object") naturally
+        persists across frames.
+
+    Subtlety: `at_depth_m` and `on_top_of` are *independent* annotation
+    paths. They don't blend. If keypoint K0 has `at_depth_m: 1.0` and K1
+    has `on_top_of: obj_X`, the segment between them has neither
+    annotation (no smooth depth transition) and the compositor uses the
+    legacy depth-map sampling. To get a smooth transition, give both
+    keypoints `at_depth_m` values explicitly.
     """
     if not keypoints:
         raise ValueError("Trajectory has no keypoints.")
 
-    # Sort by frame just in case
     kps = sorted(keypoints, key=lambda k: k["frame"])
+
+    def step_field(kp, name, default=None):
+        """Read a field that uses step-function propagation."""
+        return kp.get(name, default)
+
+    def interp_depth(k0, k1, t):
+        """
+        Linear interp of at_depth_m, but only across segments where both
+        endpoints are annotated. At exact keypoint frames (t=0 or t=1)
+        we return the endpoint's own value if it has one, even if the
+        other endpoint doesn't — annotated keypoints always express their
+        author's intent at that frame.
+        """
+        d0 = k0.get("at_depth_m")
+        d1 = k1.get("at_depth_m")
+        if t == 0:
+            return None if d0 is None else float(d0)
+        if t == 1:
+            return None if d1 is None else float(d1)
+        if d0 is None or d1 is None:
+            return None
+        return float(d0) + t * (float(d1) - float(d0))
 
     frames = []
     for i in range(total_frames):
-        # Find surrounding keypoints
         before = [k for k in kps if k["frame"] <= i]
         after  = [k for k in kps if k["frame"] >  i]
 
         if not before:
-            # Before first keypoint — clamp to first
             kp = kps[0]
             frames.append({
                 "foot_position": tuple(kp["foot_position"]),
-                "depth_m":       kp.get("depth_m"),
-                "facing":        kp.get("facing", "right"),
-                "animation":     kp.get("animation", "walk"),
+                "facing":        step_field(kp, "facing", "right"),
+                "animation":     step_field(kp, "animation", "walk"),
+                "at_depth_m":    kp.get("at_depth_m"),
+                "on_top_of":     step_field(kp, "on_top_of"),
             })
             continue
 
         if not after:
-            # After last keypoint — clamp to last
             kp = kps[-1]
             frames.append({
                 "foot_position": tuple(kp["foot_position"]),
-                "depth_m":       kp.get("depth_m"),
-                "facing":        kp.get("facing", "right"),
-                "animation":     kp.get("animation", "idle"),
+                "facing":        step_field(kp, "facing", "right"),
+                "animation":     step_field(kp, "animation", "idle"),
+                "at_depth_m":    kp.get("at_depth_m"),
+                "on_top_of":     step_field(kp, "on_top_of"),
             })
             continue
 
@@ -76,25 +112,12 @@ def interpolate_trajectory(keypoints: list, total_frames: int) -> list:
         x = int(k0["foot_position"][0] + t * (k1["foot_position"][0] - k0["foot_position"][0]))
         y = int(k0["foot_position"][1] + t * (k1["foot_position"][1] - k0["foot_position"][1]))
 
-        d0 = k0.get("depth_m")
-        d1 = k1.get("depth_m")
-        if d0 is not None and d1 is not None:
-            depth_m = d0 + t * (d1 - d0)   # smooth linear interpolation
-        elif d0 is not None:
-            depth_m = d0                    # hold — no target yet
-        elif d1 is not None:
-            depth_m = d1                    # hold forward — approaching explicit region.
-                                            # Prevents a depth jump at the boundary frame
-                                            # where the compositor would otherwise switch
-                                            # from a sampled value to the explicit d1.
-        else:
-            depth_m = None                  # both sides unset — compositor samples
-
         frames.append({
             "foot_position": (x, y),
-            "depth_m":       depth_m,
-            "facing":        k0.get("facing", "right"),
-            "animation":     k0.get("animation", "walk"),
+            "facing":        step_field(k0, "facing", "right"),
+            "animation":     step_field(k0, "animation", "walk"),
+            "at_depth_m":    interp_depth(k0, k1, t),
+            "on_top_of":     step_field(k0, "on_top_of"),
         })
 
     return frames

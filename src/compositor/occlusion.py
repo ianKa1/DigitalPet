@@ -39,10 +39,20 @@ BEHIND   = 1
 class ObjectOcclusionState:
     """One state machine per scene object, per character."""
 
-    def __init__(self, obj: dict):
-        self.obj             = obj
-        self.state           = IN_FRONT
-        self.is_intersecting = False
+    def __init__(self, obj: dict, depth_tolerance_m: float = 0.0):
+        """
+        Args:
+            obj: scene object dict with 'mask' and 'base_depth_m'.
+            depth_tolerance_m: stored for future use but not currently
+                applied in _decide_state — the depth comparison remains
+                strict (d > obj_depth) regardless of this value.
+                Intended as a slop margin to absorb calibration noise
+                from monocular depth estimation. Defaults to 0.
+        """
+        self.obj                = obj
+        self.depth_tolerance_m  = depth_tolerance_m
+        self.state              = IN_FRONT
+        self.is_intersecting    = False
 
     def _bbox_intersects_mask(self, char_bbox: tuple) -> bool:
         ax1, ay1, ax2, ay2 = char_bbox
@@ -97,7 +107,8 @@ class ObjectOcclusionState:
     def update(self, foot_x: int, foot_y: int,
                foot_depth_m: float, future_feet: list,
                char_bbox: tuple,
-               depth_m: np.ndarray = None) -> bool:
+               depth_m: np.ndarray = None,
+               forced_state: int = None) -> bool:
         """
         Intersection-based state transition:
           not intersecting → not intersecting: hold IN_FRONT
@@ -109,10 +120,18 @@ class ObjectOcclusionState:
                  decision uses the overlap-region median depth instead of
                  base_depth_m, giving correct results for non-ground-level
                  intersections.
+
+        forced_state: if provided (IN_FRONT or BEHIND), overrides the
+                 depth-comparison logic entirely. Used for semantic
+                 trajectory annotations: when the trajectory says
+                 `on_top_of: obj_X`, the character must remain IN_FRONT
+                 regardless of how the sampled depth values compare.
         """
         intersecting = self._bbox_intersects_mask(char_bbox)
 
-        if intersecting and not self.is_intersecting:
+        if forced_state is not None:
+            self.state = forced_state
+        elif intersecting and not self.is_intersecting:
             future_depths = [fd[2] for fd in future_feet if len(fd) > 2]
             obj_depth = (self._sample_overlap_depth(char_bbox, depth_m)
                          if depth_m is not None
